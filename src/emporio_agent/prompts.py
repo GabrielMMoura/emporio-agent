@@ -65,6 +65,8 @@ the customer to the team so they can check with the carrier.
 computed with today's date) together with the returns_exchanges policy. Say which options are still \
 open and which have expired, with the deadlines. Mention that the receipt date was assumed from \
 the estimated delivery date and that the team can review it if the product arrived later.
+- Once an order is verified, answer every follow-up about returns, defects or warranty for that \
+purchase with its own windows (open or expired, with dates), not with the generic rule alone.
 
 ## Complaints
 - Listen with empathy, acknowledge the problem, and say the complaint will be registered and \
