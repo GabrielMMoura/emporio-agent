@@ -22,3 +22,8 @@ One line per decision. Business rules decided by the project owner are marked **
 - Price filters use the price the customer pays (promotional price when a promotion is active).
 - Alternatives for unavailable products: same category, available, within ±30% of the price, closest first, top 3 (computed by the tool, not the model). **[owner]** rule, range is a technical choice.
 - Descriptions that mention a brand absent from the product name (rows 135, 137, 139, 140, 142, 144) are withheld from answers and search; name and specs are treated as authoritative.
+- Order lookup requires order number + e-mail or phone of that order's customer (LGPD). Unknown order and wrong identity return the same message, so the tool does not reveal which orders exist. **[owner]**
+- Phone matching ignores formatting and accepts the number with or without +55 and area code (at least 8 digits); e-mail matching is case-insensitive.
+- After-sales windows (7-day regret and preference exchange, 30-day defect exchange from purchase, 90-day legal warranty) are computed by the tool from today's system date, with `estimated_delivery` as the receipt date. **[owner]**
+- Shipped orders past their estimated delivery get `delivery_overdue_days`, so the agent can acknowledge the delay instead of repeating a past date.
+- "Today" comes from `clock.now()` in America/Campo_Grande; tests freeze it.

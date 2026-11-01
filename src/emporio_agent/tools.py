@@ -7,9 +7,19 @@ model only has to choose a tool and phrase the answer.
 import json
 from collections.abc import Callable
 from dataclasses import dataclass
+from datetime import date, timedelta
 from decimal import Decimal
 
-from emporio_agent.data_store import Product, format_brl, get_store, normalize
+from emporio_agent import clock
+from emporio_agent.data_store import (
+    Customer,
+    Order,
+    Product,
+    digits_only,
+    format_brl,
+    get_store,
+    normalize,
+)
 
 STOPWORDS = {"de", "da", "do", "das", "dos", "para", "com", "e", "o", "a", "os", "as", "um", "uma"}
 
@@ -181,6 +191,119 @@ def get_product_details(product_id: int) -> dict:
     return details
 
 
+# --- Orders --------------------------------------------------------------------------
+
+ORDER_STATUS_LABELS = {
+    "pending": "pendente (aguardando confirmação)",
+    "confirmed": "confirmado, em preparação para envio",
+    "shipped": "enviado, a caminho",
+    "delivered": "entregue",
+    "cancelled": "cancelado",
+}
+
+REGRET_DAYS = 7  # policy 4.1, counted from receipt
+PREFERENCE_EXCHANGE_DAYS = 7  # policy 4.3
+DEFECT_EXCHANGE_DAYS = 30  # policy 4.2, counted from purchase
+LEGAL_WARRANTY_DAYS = 90  # policy 8.1, counted from receipt
+
+VERIFICATION_FAILED = {
+    "verified": False,
+    "error": "Could not find an order with this number for the e-mail or phone given. "
+    "Ask the customer to check both. Do not reveal whether the order exists.",
+}
+
+
+def _fmt_date(d: date) -> str:
+    return d.strftime("%d/%m/%Y")
+
+
+def _payment_label(method: str) -> str:
+    if method.startswith("credit_"):
+        return f"cartão de crédito em {method.removeprefix('credit_')}"
+    return {"pix": "PIX", "debit": "cartão de débito", "boleto": "boleto bancário"}.get(
+        method, method
+    )
+
+
+def _identity_matches(customer: Customer, email_or_phone: str) -> bool:
+    given = email_or_phone.strip().lower()
+    if "@" in given:
+        return given == customer.email.strip().lower()
+    digits = digits_only(given)
+    if len(digits) in (12, 13) and digits.startswith("55"):
+        digits = digits[2:]  # +55 country code
+    # Accept the number with or without area code (at least the 8-9 local digits).
+    return len(digits) >= 8 and digits_only(customer.phone).endswith(digits)
+
+
+def _window(start: date, days: int, today: date) -> dict:
+    deadline = start + timedelta(days=days)
+    return {"deadline": _fmt_date(deadline), "open": today <= deadline}
+
+
+def _after_sales(order: Order, today: date) -> dict:
+    """Return/exchange/warranty windows for a delivered order, computed from today's date.
+
+    The data has no actual receipt date, so the estimated delivery date is the proxy.
+    """
+    received = order.estimated_delivery or order.order_date
+    return {
+        "assumed_receipt_date": _fmt_date(received),
+        "assumption": "No receipt date in the system; the estimated delivery date is "
+        "used as the receipt date.",
+        "today": _fmt_date(today),
+        "days_since_receipt": (today - received).days,
+        "regret_return_7_days": _window(received, REGRET_DAYS, today),
+        "preference_exchange_7_days": _window(received, PREFERENCE_EXCHANGE_DAYS, today),
+        "defect_exchange_30_days_from_purchase": _window(
+            order.order_date, DEFECT_EXCHANGE_DAYS, today
+        ),
+        "legal_warranty_90_days": _window(received, LEGAL_WARRANTY_DAYS, today),
+        "manufacturer_warranty": "Varies from 6 months to 2 years by manufacturer; "
+        "see the warranty certificate. The store can mediate the claim.",
+    }
+
+
+def get_order_status(order_id: int, email_or_phone: str) -> dict:
+    """Order data is only returned when the e-mail or phone matches the order's customer."""
+    store = get_store()
+    order = store.orders.get(order_id)
+    if order is None:
+        return VERIFICATION_FAILED
+    customer = store.customers[order.customer_id]
+    if not _identity_matches(customer, email_or_phone):
+        return VERIFICATION_FAILED
+
+    today = clock.now().date()
+    result = {
+        "verified": True,
+        "order_id": order.id,
+        "customer_first_name": customer.name.split()[0],
+        "status": order.status,
+        "status_label": ORDER_STATUS_LABELS.get(order.status, order.status),
+        "order_date": _fmt_date(order.order_date),
+        "days_since_order": (today - order.order_date).days,
+        "items": [{"name": store.products[pid].name, "quantity": qty} for pid, qty in order.items],
+        "total": format_brl(order.total),
+        "payment_method": _payment_label(order.payment_method),
+    }
+    if order.tracking_code:
+        result["tracking_code"] = order.tracking_code
+    elif order.status in ("pending", "confirmed"):
+        result["tracking_note"] = (
+            "No tracking code yet: it is sent by e-mail and WhatsApp when the order ships."
+        )
+    if order.estimated_delivery:
+        result["estimated_delivery"] = _fmt_date(order.estimated_delivery)
+    if order.status == "shipped" and order.estimated_delivery and order.estimated_delivery < today:
+        result["delivery_overdue_days"] = (today - order.estimated_delivery).days
+    if order.notes:
+        result["notes"] = order.notes
+    if order.status == "delivered":
+        result["after_sales"] = _after_sales(order, today)
+    return result
+
+
 # --- Registry ------------------------------------------------------------------------
 
 
@@ -246,6 +369,24 @@ def build_tools() -> dict[str, Tool]:
                 "type": "object",
                 "properties": {"product_id": {"type": "integer"}},
                 "required": ["product_id"],
+            },
+        ),
+        Tool(
+            get_order_status,
+            "Status of a customer's order: items, total, tracking and delivery estimate; for "
+            "delivered orders, also the return, exchange and warranty windows computed from "
+            "today's date. Requires the order number AND the e-mail or phone of the buyer; "
+            "ask the customer for both before calling. Never guess them.",
+            {
+                "type": "object",
+                "properties": {
+                    "order_id": {"type": "integer"},
+                    "email_or_phone": {
+                        "type": "string",
+                        "description": "E-mail or phone number given by the customer.",
+                    },
+                },
+                "required": ["order_id", "email_or_phone"],
             },
         ),
     ]
