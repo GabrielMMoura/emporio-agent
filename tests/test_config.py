@@ -21,7 +21,7 @@ def test_empty_values_fall_back_to_defaults(monkeypatch):
     settings = config.load_settings()
 
     assert settings.api_key is None
-    assert settings.base_url is None
+    assert settings.base_url == config.DEFAULT_BASE_URL
     assert settings.model == config.DEFAULT_MODEL
 
 

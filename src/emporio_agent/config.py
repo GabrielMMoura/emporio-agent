@@ -12,12 +12,13 @@ POLICIES_PATH = DATA_DIR / "processed" / "policies.json"
 STORE_TIMEZONE = "America/Campo_Grande"
 
 DEFAULT_MODEL = "gpt-4.1-mini"
+DEFAULT_BASE_URL = "https://api.openai.com/v1"
 
 
 @dataclass(frozen=True)
 class Settings:
     api_key: str | None
-    base_url: str | None
+    base_url: str
     model: str
 
 
@@ -25,6 +26,7 @@ def load_settings() -> Settings:
     load_dotenv(PROJECT_ROOT / ".env")
     return Settings(
         api_key=os.getenv("OPENAI_API_KEY") or None,
-        base_url=os.getenv("OPENAI_BASE_URL") or None,
+        # An empty OPENAI_BASE_URL must not reach the SDK, which would use "" as the URL.
+        base_url=os.getenv("OPENAI_BASE_URL") or DEFAULT_BASE_URL,
         model=os.getenv("MODEL") or DEFAULT_MODEL,
     )

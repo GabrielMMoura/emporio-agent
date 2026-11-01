@@ -13,3 +13,4 @@ One line per decision. Business rules decided by the project owner are marked **
 - Money uses `Decimal` rounded half-up to cents and is formatted by code as `R$ 1.234,56`; the model never formats or computes prices.
 - Availability is derived in one place (`Product.availability`): `discontinued` and `coming_soon` win over stock; `active` with stock 0 is `out_of_stock`.
 - Only `is_active = 1` promotions are loaded; the agent cannot see expired ones. **[owner]**
+- An empty `OPENAI_BASE_URL` falls back to the official URL; the OpenAI SDK would otherwise treat `""` as the endpoint.
