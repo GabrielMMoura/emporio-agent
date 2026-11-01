@@ -14,3 +14,6 @@ One line per decision. Business rules decided by the project owner are marked **
 - Availability is derived in one place (`Product.availability`): `discontinued` and `coming_soon` win over stock; `active` with stock 0 is `out_of_stock`.
 - Only `is_active = 1` promotions are loaded; the agent cannot see expired ones. **[owner]**
 - An empty `OPENAI_BASE_URL` falls back to the official URL; the OpenAI SDK would otherwise treat `""` as the endpoint.
+- Policies: the 8-page PDF is split by its 10 top-level section titles into `policies.json`, served by `get_policy(topic)`. No embeddings or vector DB: the model picks a topic from an enum, which is exact and debuggable at this size.
+- PDF parsing uses `pdfplumber` (dev-only); `pypdf` returned one word per line for this file. The JSON is committed so runtime needs no PDF parser.
+- Official contact: (67) 3341-4444 and contato@emporiodamusica.com.br (cover + section 1.2). The build script rewrites the conflicting (67) 3321-4500 (section 7) and the accented e-mail (section 1.2 table). **[owner]**
