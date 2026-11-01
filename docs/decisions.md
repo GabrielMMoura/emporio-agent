@@ -31,3 +31,9 @@ One line per decision. Business rules decided by the project owner are marked **
 - Installment rules follow the detailed policy 3.1 (2-3x min R$ 50 per installment, 4-6x min R$ 80, 7-12x min R$ 100). The summary table's "parcela mínima R$ 100,00" is read as the 7-12x rule. "Sem valor mínimo (exceto abaixo de R$ 50,00)" is read as "each installment must be at least R$ 50".
 - `calculate_payment_options` takes a `product_id`, not a price, so the price always comes from the data. PIX 5% is not applied to promotional prices. **[owner]**
 - Payment options are not computed for unavailable products (out of stock, discontinued, coming soon). **[owner]** (`coming_soon` is never sold)
+- Agent: hand-written function-calling loop over the Chat Completions API (no LangChain/agent framework). Parallel tool calls are allowed; at most 6 tool rounds per message, then a fallback reply pointing to the human team.
+- Tool errors (bad arguments, unknown ids) are returned to the model as JSON instead of raised, so it can recover or ask the customer. API errors roll back the turn and surface to the caller.
+- System prompt is written in English (instructions), with an explicit rule to reply in Brazilian Portuguese. It is rebuilt every turn with the current date and time in Campo Grande.
+- Official contact data is also in the system prompt, because the agent must give it when escalating even if no tool was called.
+- History is kept in memory for the session only. No trimming: sessions are short; a long-running channel would need summarization or a window.
+- Loop tests use a scripted fake client and run the real tools; no network in tests or CI.
