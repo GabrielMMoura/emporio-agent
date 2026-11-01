@@ -11,7 +11,7 @@ DATA_DIR = PROJECT_ROOT / "data"
 POLICIES_PATH = DATA_DIR / "processed" / "policies.json"
 STORE_TIMEZONE = "America/Campo_Grande"
 
-DEFAULT_MODEL = "gpt-4.1-mini"
+DEFAULT_MODEL = "gpt-5.4-mini"
 DEFAULT_BASE_URL = "https://api.openai.com/v1"
 
 
