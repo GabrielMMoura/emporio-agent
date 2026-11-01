@@ -140,24 +140,25 @@ def search_products(
     if available_only:
         products = [p for p in products if p.availability == "available"]
 
-    match_type = "all"
+    partial = False
+    scores: dict[int, int] = {}
     if query:
         tokens = [t for t in normalize(query).split() if t not in STOPWORDS]
-        scored = [(p, _match_score(tokens, _haystack(p))) for p in products]
-        exact = [p for p, score in scored if score == len(tokens)]
-        if exact:
-            products, match_type = exact, "all_terms"
-        else:
-            partial = sorted((s for s in scored if s[1] > 0), key=lambda s: -s[1])
-            products, match_type = [p for p, _ in partial], "partial"
+        scores = {p.id: _match_score(tokens, _haystack(p)) for p in products}
+        exact = [p for p in products if scores[p.id] == len(tokens)]
+        partial = not exact
+        products = exact or [p for p in products if scores[p.id] > 0]
 
-    products.sort(key=lambda p: (p.availability != "available", p.final_price))
+    # Available first, then most relevant (only differs for partial matches), then cheapest.
+    products.sort(
+        key=lambda p: (p.availability != "available", -scores.get(p.id, 0), p.final_price)
+    )
     limit = max(1, min(limit, MAX_RESULTS))
     result = {
         "total_matches": len(products),
         "products": [_product_summary(p) for p in products[:limit]],
     }
-    if match_type == "partial":
+    if partial:
         result["note"] = "No product matched every search term; showing partial matches."
     return result
 

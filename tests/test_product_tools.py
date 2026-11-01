@@ -143,3 +143,10 @@ def test_contradictory_description_is_withheld_and_not_searched():
     assert "description" not in details
     assert details["description_note"]
     assert "Teclado Sintetizador Roland Synth 3 Pro" not in names(search_products(query="yamaha"))
+
+
+def test_partial_matches_are_ranked_by_relevance_before_price():
+    # Cheaper nylon guitars match one term; the Takamine nylon models match two.
+    result = search_products(query="takamine nylon theremin", limit=20)
+    assert result["note"]
+    assert result["products"][0]["name"] == "Takamine GC1CE Elétrico Nylon Natural"
