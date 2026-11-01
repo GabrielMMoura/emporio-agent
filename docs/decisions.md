@@ -37,3 +37,4 @@ One line per decision. Business rules decided by the project owner are marked **
 - Official contact data is also in the system prompt, because the agent must give it when escalating even if no tool was called.
 - History is kept in memory for the session only. No trimming: sessions are short; a long-running channel would need summarization or a window.
 - Loop tests use a scripted fake client and run the real tools; no network in tests or CI.
+- Interface: CLI (`emporio-agent`) with `/novo` and `/sair`, `--debug` to show tool calls and `--save` to export the conversation as Markdown. The challenge focuses on the agent; a CLI keeps testing and transcripts trivial.
