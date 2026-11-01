@@ -208,6 +208,13 @@ change that invalidates them fails the build.
   empty-identity guard in the tool. The remaining failure mode: the agent sometimes forgets an
   order number given in the first message and asks for it again. It never discloses data
   without verification, since that check is in code.
+- **Promotion label in payment answers.** Product lists and price answers show original price,
+  promotional price and % reliably, but when asked only "quanto fica no PIX?" for a promoted
+  item, the model shows the full label about half the time; otherwise it says the price is
+  already promotional without the original price and %. Three attempts (a ready-made label in
+  the tool, an explicit prompt rule, embedding the label in the price string) did not make it
+  reliable; the tool does return the label. A deterministic fix would be to post-process
+  replies, or to render price answers from templates.
 - **Shipping cost is not calculated**: it needs CEP, weight and dimensions, which the data does
   not have. The agent explains the rules and refers to the team.
 - **Session-only memory** and no history trimming; fine for chat sessions, not for a long-lived

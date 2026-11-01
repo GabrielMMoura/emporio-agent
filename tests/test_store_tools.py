@@ -89,6 +89,10 @@ def test_pix_discount_does_not_stack_with_promotion():
     result = calculate_payment_options(121)  # Ohana CK-20, 549 with 20% off
     assert result["promotion"]["original_price"] == "R$ 549,00"
     assert result["promotion"]["discount_percent"] == 20
+    # Regression: PIX answers for promoted items left out the original price and percent.
+    assert result["promotion"]["display"] == (
+        "de R$ 549,00 por R$ 439,20 (20% de desconto, Desconto Exclusivo)"
+    )
     assert result["price"] == "R$ 439,20"
     assert result["pix"]["total"] == "R$ 439,20"
     assert "does not stack" in result["pix"]["note"]

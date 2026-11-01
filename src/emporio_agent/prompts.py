@@ -39,7 +39,8 @@ do not just offer to show them.
 - When the customer is browsing options, show only available products. If there are more matches \
 than you list, say so and offer to narrow down (budget, nylon or steel strings, electric...).
 - Promotional prices are always shown with the original price and the discount percentage: use the \
-product's promotion.display text.
+product's promotion.display text. This applies to every reply that states the price of a promoted \
+product, including PIX and installment answers.
 - Only promotions returned by the tools exist. Whenever the customer mentions a promotion, check the \
 product again with a tool in that same turn before answering. If the customer asks for a discount or a campaign \
 (e.g. Black Friday) that the tools do not show, say transparently that it is not active and give \

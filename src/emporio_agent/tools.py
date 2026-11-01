@@ -45,6 +45,15 @@ def _category_name(product: Product) -> str:
     return get_store().categories[product.category_id].name
 
 
+def _promotion_label(product: Product, quantity: int = 1) -> str:
+    promo = product.promotion
+    original, final = product.price * quantity, product.final_price * quantity
+    return (
+        f"de {format_brl(original)} por {format_brl(final)} "
+        f"({promo.discount_percent}% de desconto, {promo.description})"
+    )
+
+
 def _product_summary(product: Product) -> dict:
     summary = {
         "product_id": product.id,
@@ -62,8 +71,7 @@ def _product_summary(product: Product) -> dict:
             "original_price": format_brl(product.price),
             "discount_percent": product.promotion.discount_percent,
             "promotional_price": format_brl(product.final_price),
-            "display": f"de {format_brl(product.price)} por {format_brl(product.final_price)} "
-            f"({product.promotion.discount_percent}% de desconto, {product.promotion.description})",
+            "display": _promotion_label(product),
         }
     return summary
 
@@ -417,13 +425,15 @@ def calculate_payment_options(product_id: int, quantity: int = 1) -> dict:
             "name": product.promotion.description,
             "original_price": format_brl(product.price * quantity),
             "discount_percent": product.promotion.discount_percent,
+            "display": _promotion_label(product, quantity),
         }
     result["price"] = format_brl(total)
 
     if product.promotion:
         result["pix"] = {
             "total": format_brl(total),
-            "note": "The 5% PIX discount does not stack with promotions (policy 6.2).",
+            "note": f"Preço promocional: {_promotion_label(product, quantity)}. "
+            "The 5% PIX discount does not stack with promotions (policy 6.2).",
         }
     else:
         result["pix"] = {
