@@ -1,0 +1,126 @@
+# Return request: live order data + return policy
+
+Non-trivial case. The agent verifies the customer, reads the order, and applies the 7-day regret, 30-day defect and 90-day warranty rules using today's date and the estimated delivery date as the receipt date.
+
+Generated on 01/11/2026 00:34 (store time).
+
+Model: `gpt-5.4-mini`
+
+**Cliente:**
+
+> Me arrependi da minha compra, posso devolver meu pedido?
+
+Tools called: `get_policy(topic="returns_exchanges")`
+
+<details><summary>Tool results</summary>
+
+`get_policy(topic="returns_exchanges")`
+
+```json
+{
+  "topic": "returns_exchanges",
+  "title": "4. Política de Trocas e Devoluções",
+  "text": "A Empório da Música segue as diretrizes do Código de Defesa do Consumidor (Lei nº 8.078/90) e\noferece condições claras para trocas e devoluções.\n4.1 Direito de Arrependimento (Compras Online)\n• O cliente pode solicitar a devolução em até 7 (sete) dias corridos após o recebimento do\nproduto, sem necessidade de justificativa.\n• O produto deve estar em sua embalagem original, sem sinais de uso, com todos os\nacessórios e manuais.\n• O reembolso será realizado na mesma forma de pagamento original em até 10 dias úteis.\n• O frete de devolução é por conta da loja em caso de arrependimento.\n4.2 Trocas por Defeito\n• Produtos com defeito de fabricação podem ser trocados em até 30 (trinta) dias corridos após\na compra.\n• Após os 30 dias, o cliente deve acionar a garantia diretamente com o fabricante. A Empório\nda Música pode intermediar o processo mediante solicitação.\n• Danos causados por mau uso, quedas, exposição a umidade excessiva ou modificações não\nautorizadas não são cobertos.\n4.3 Trocas por Preferência\n• Trocas por preferência (cor, modelo, tamanho) são permitidas em até 7 dias, mediante\ndisponibilidade do produto desejado.\n• O produto deve estar em perfeito estado e na embalagem original.\n• Diferenças de valor serão cobradas ou reembolsadas conforme o caso.\n4.4 Itens Não Elegíveis para Troca\n• Instrumentos com personalização ou ajustes sob encomenda (setup, regulagem especial).\n• Produtos adquiridos em promoções de liquidação com aviso explícito de \"venda final\".\n• Boquilhas de instrumentos de sopro, por questões de higiene."
+}
+```
+
+</details>
+
+**Agente:**
+
+> Pode sim, se a compra foi online e você pedir a devolução em até 7 dias corridos após o recebimento. O produto precisa estar na embalagem original, sem sinais de uso, com todos os acessórios e manuais.
+>
+> Nesse caso, o reembolso sai na mesma forma de pagamento original em até 10 dias úteis, e o frete de devolução fica por conta da loja. Se quiser, me passa o número do pedido que eu te ajudo a conferir se ainda está dentro do prazo.
+
+---
+
+**Cliente:**
+
+> Pedido 5, email rafael.pereira@jmail.com
+
+Tools called: `get_order_status(order_id=5, email_or_phone="rafael.pereira@jmail.com")`
+
+<details><summary>Tool results</summary>
+
+`get_order_status(order_id=5, email_or_phone="rafael.pereira@jmail.com")`
+
+```json
+{
+  "verified": true,
+  "order_id": 5,
+  "customer_first_name": "Rafael",
+  "status": "delivered",
+  "status_label": "entregue",
+  "order_date": "05/01/2026",
+  "days_since_order": 300,
+  "items": [
+    {
+      "name": "Crafter D-8 Dreadnought Natural",
+      "quantity": 1
+    }
+  ],
+  "total": "R$ 4.599,00",
+  "payment_method": "PIX",
+  "tracking_code": "BRTP3456789BR",
+  "estimated_delivery": "18/01/2026",
+  "after_sales": {
+    "assumed_receipt_date": "18/01/2026",
+    "assumption": "No receipt date in the system; the estimated delivery date is used as the receipt date.",
+    "today": "01/11/2026",
+    "days_since_receipt": 287,
+    "regret_return_7_days": {
+      "deadline": "25/01/2026",
+      "open": false
+    },
+    "preference_exchange_7_days": {
+      "deadline": "25/01/2026",
+      "open": false
+    },
+    "defect_exchange_30_days_from_purchase": {
+      "deadline": "04/02/2026",
+      "open": false
+    },
+    "legal_warranty_90_days": {
+      "deadline": "18/04/2026",
+      "open": false
+    },
+    "manufacturer_warranty": "Varies from 6 months to 2 years by manufacturer; see the warranty certificate. The store can mediate the claim."
+  }
+}
+```
+
+</details>
+
+**Agente:**
+
+> Rafael, verifiquei seu pedido e ele foi entregue. No seu caso, o prazo de arrependimento de 7 dias já passou: a data considerada de recebimento foi 18/01/2026 e o prazo terminou em 25/01/2026.
+>
+> Também já passaram os prazos de troca por preferência e por defeito. Se quiser, ainda posso te orientar sobre a garantia do fabricante, que varia conforme o certificado do produto.
+
+---
+
+**Cliente:**
+
+> E se o violão apresentar defeito, o que eu faço?
+
+Tools called: `get_policy(topic="warranty")`
+
+<details><summary>Tool results</summary>
+
+`get_policy(topic="warranty")`
+
+```json
+{
+  "topic": "warranty",
+  "title": "8. Garantia",
+  "text": "8.1 Garantia Legal\nConforme o Código de Defesa do Consumidor, todos os produtos possuem garantia legal de 90\n(noventa) dias contra defeitos de fabricação, contados a partir da data de recebimento pelo cliente.\n8.2 Garantia do Fabricante\nAlém da garantia legal, a maioria dos fabricantes oferece garantia própria que pode variar de 6\nmeses a 2 anos. Os prazos e condições específicos estão detalhados no certificado de garantia que\nacompanha cada produto.\n8.3 O que Não Cobre a Garantia\n• Desgaste natural de peças (trastes, cordas, feltros, palhetas de sopro).\n• Danos por mau uso, queda, exposição a condições climáticas extremas.\n• Modificações ou reparos realizados por terceiros não autorizados.\n• Danos estéticos que não afetem a funcionalidade do instrumento."
+}
+```
+
+</details>
+
+**Agente:**
+
+> Se for defeito de fabricação, a garantia legal cobre por 90 dias a partir do recebimento. No seu pedido, esse prazo já passou.
+>
+> Mesmo assim, a garantia do fabricante pode continuar valendo, porque ela varia de 6 meses a 2 anos, conforme o certificado do produto. O ideal é separar o certificado/nota e procurar a assistência indicada pelo fabricante; se você quiser, eu também posso te orientar com o que costuma ser aceito na garantia.
