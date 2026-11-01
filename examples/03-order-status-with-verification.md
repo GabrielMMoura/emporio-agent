@@ -2,7 +2,7 @@
 
 The agent asks for the buyer's e-mail before showing order data, refuses a wrong e-mail, then shows an order past its estimated delivery and handles the complaint (24 business hours).
 
-Generated on 01/11/2026 00:37 (store time).
+Generated on 01/11/2026 00:48 (store time).
 
 Model: `gpt-5.4-mini`
 
@@ -10,11 +10,24 @@ Model: `gpt-5.4-mini`
 
 > Oi, quero saber do meu pedido 8
 
-Tools called: none
+Tools called: `get_order_status(order_id=8, email_or_phone="")`
+
+<details><summary>Tool results</summary>
+
+`get_order_status(order_id=8, email_or_phone="")`
+
+```json
+{
+  "verified": false,
+  "error": "No e-mail or phone given. Ask the customer for one before calling again."
+}
+```
+
+</details>
 
 **Agente:**
 
-> Claro! Pra eu consultar seu pedido, me manda também o e-mail ou o telefone usado na compra.
+> Claro! Pra eu localizar o pedido 8, me manda o e-mail ou o telefone usado na compra, por favor.
 
 ---
 
@@ -39,7 +52,9 @@ Tools called: `get_order_status(order_id=8, email_or_phone="ana.ferreira@gmail.c
 
 **Agente:**
 
-> Não consegui localizar esse pedido com esse e-mail. Pode conferir se o número 8 e o e-mail estão certinhos?
+> Não consegui localizar um pedido com esse número usando esse e-mail. Dá uma conferida no número do pedido e no e-mail, por favor.
+>
+> Se quiser, pode me mandar os dados de novo que eu tento aqui.
 
 ---
 
@@ -80,15 +95,9 @@ Tools called: `get_order_status(order_id=8, email_or_phone="anacarol.ferreira@co
 
 **Agente:**
 
-> Oi, Ana! Seu pedido 8 já foi enviado e está a caminho.
+> Ana, seu pedido 8 foi enviado e está a caminho. O código de rastreio é BRJL5544332BR.
 >
-> - Item: Kala KA-C Concert Mogno
-> - Total: R$ 349,90
-> - Pagamento: cartão de débito
-> - Código de rastreio: BRJL5544332BR
-> - Previsão de entrega: 28/02/2026
->
-> Como a data estimada já passou, peço desculpas pela demora. O ideal agora é a equipe verificar com a transportadora pra entender o atraso. Se quiser, eu também posso te orientar com o próximo passo.
+> A previsão de entrega era 28/02/2026 e ela já passou em 246 dias, então recomendo falar com a equipe para verificarem com a transportadora. Quer que eu te passe o contato?
 
 ---
 
@@ -100,6 +109,6 @@ Tools called: none
 
 **Agente:**
 
-> Poxa, Ana, entendo totalmente a sua chateação — isso realmente não era pra acontecer. Vou registrar sua reclamação e encaminhar para a pessoa responsável, com retorno em até 24 horas úteis.
+> Poxa, Ana, entendo totalmente a sua chateação — sinto muito mesmo por isso.
 >
-> Se puder, me diga rapidinho o que aconteceu do seu lado além do atraso, pra eu repassar certinho.
+> Vou registrar sua reclamação e encaminhar pra pessoa responsável, com retorno em até 24 horas úteis. Se puder, me diga também o que aconteceu além do atraso, pra eu deixar tudo certinho no registro.

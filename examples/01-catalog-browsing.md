@@ -2,7 +2,7 @@
 
 Browsing with a price filter, a follow-up on the same list, and a product that is active but has zero stock (alternatives are suggested).
 
-Generated on 01/11/2026 00:37 (store time).
+Generated on 01/11/2026 00:47 (store time).
 
 Model: `gpt-5.4-mini`
 
@@ -118,7 +118,7 @@ Tools called: `search_products(category="Violões", max_price=1000, available_on
 
 **Agente:**
 
-> Claro! Até R$ 1.000, tenho essas opções de violões disponíveis:
+> Tem sim! Separei algumas opções de violões disponíveis até R$ 1.000:
 >
 > - Tagima Memphis AC-39 Nylon Natural — R$ 429,90
 > - Rozini RC-104 Nylon Estudante — R$ 459,90
@@ -131,7 +131,7 @@ Tools called: `search_products(category="Violões", max_price=1000, available_on
 > - Shelby SGD-195E Elétrico Aço Sunburst — R$ 799,00
 > - Yamaha C70 Nylon Natural — R$ 849,00
 >
-> Ainda tem mais 2 opções dentro desse valor, se você quiser eu posso filtrar por nylon, aço ou elétrico para te mostrar as melhores.
+> Se quiser, eu também posso filtrar por nylon, aço ou eletroacústico pra te indicar os mais legais pro seu uso.
 
 ---
 
@@ -247,7 +247,7 @@ Tools called: `search_products(query="nylon", category="Violões", available_onl
 
 **Agente:**
 
-> Tem sim — desses, os de nylon são:
+> Pra começar, os de nylon disponíveis são esses aqui:
 >
 > - Tagima Memphis AC-39 Nylon Natural — R$ 429,90
 > - Rozini RC-104 Nylon Estudante — R$ 459,90
@@ -255,7 +255,7 @@ Tools called: `search_products(query="nylon", category="Violões", available_onl
 > - Giannini GN-15 Nylon Cedr Natural — R$ 689,00
 > - Yamaha C70 Nylon Natural — R$ 849,00
 >
-> Pra iniciante, esses costumam ser uma boa escolha porque o nylon costuma ser mais confortável para começar. Se quiser, eu também posso te separar os mais indicados para criança ou comparar os 2 mais em conta.
+> Pra iniciante, o nylon costuma ser mais confortável nos dedos, então é uma ótima escolha pro seu filho. Se quiser, eu posso te ajudar a separar os mais indicados por tamanho e custo-benefício.
 
 ---
 
@@ -263,11 +263,11 @@ Tools called: `search_products(query="nylon", category="Violões", available_onl
 
 > E o Giannini GF-3D, vocês têm?
 
-Tools called: `search_products(query="Giannini GF-3D", category="Violões", available_only=false, limit=5)`
+Tools called: `search_products(query="Giannini GF-3D", available_only=false, limit=10)`
 
 <details><summary>Tool results</summary>
 
-`search_products(query="Giannini GF-3D", category="Violões", available_only=false, limit=5)`
+`search_products(query="Giannini GF-3D", available_only=false, limit=10)`
 
 ```json
 {
@@ -318,11 +318,11 @@ Tools called: `search_products(query="Giannini GF-3D", category="Violões", avai
 
 **Agente:**
 
-> Temos sim, mas ele está esgotado no momento.
+> O Giannini GF-3D está esgotado no momento, por R$ 799,90.
 >
-> Se quiser, posso te passar alternativas parecidas que estão disponíveis:
+> Alternativas disponíveis na faixa:
 > - Shelby SGD-195E Elétrico Aço Sunburst — R$ 799,00
 > - Yamaha C70 Nylon Natural — R$ 849,00
 > - Tagima Dallas Tuner Aço Natural — R$ 749,00
 >
-> Se quiser, eu também posso procurar um violão parecido em nylon ou aço pra você.
+> Se quiser, eu também posso te indicar um parecido com esse em nylon ou em aço.

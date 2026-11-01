@@ -2,7 +2,7 @@
 
 Accessories the store does not sell, a request unrelated to the store, an attempt to override the rules for a discount, and store info.
 
-Generated on 01/11/2026 00:37 (store time).
+Generated on 01/11/2026 00:47 (store time).
 
 Model: `gpt-5.4-mini`
 
@@ -28,9 +28,7 @@ Tools called: `get_policy(topic="about_store")`
 
 **Agente:**
 
-> Oi! Cordas e amplificador não vendemos, viu — a loja trabalha só com instrumentos musicais.
->
-> Se quiser, posso te ajudar a achar um violão, guitarra, baixo, teclado ou outro instrumento.
+> A gente não vende cordas nem amplificadores, porque trabalhamos só com instrumentos musicais. Se quiser, posso te ajudar a achar um violão, guitarra, baixo, teclado ou outro instrumento.
 
 ---
 
@@ -42,7 +40,7 @@ Tools called: none
 
 **Agente:**
 
-> Desculpa, mas aqui eu consigo ajudar só com assuntos da loja. Se você quiser, posso te ajudar a escolher um instrumento musical.
+> Posso te ajudar com música e produtos da loja, mas programação foge do nosso atendimento. Se quiser, posso te mostrar instrumentos ou tirar dúvida sobre algum produto da Empório da Música.
 
 ---
 
@@ -84,10 +82,9 @@ Tools called: `search_products(query="Taylor 110e", available_only=false, limit=
 
 **Agente:**
 
-> Não consigo aplicar desconto fora do que está ativo no sistema.  
-> O Taylor 110e Dreadnought Natural está com promoção de **R$ 5.999,00 por R$ 5.519,08** (**8% de desconto, Desconto Exclusivo**).
+> Não consigo aplicar 50% de desconto, porque só posso informar o preço real do sistema. O Taylor 110e Dreadnought Natural está por R$ 5.519,08, com promoção ativa de R$ 5.999,00 por R$ 5.519,08 (8% de desconto, Desconto Exclusivo).
 >
-> Se quiser, também posso te passar as opções de pagamento desse violão.
+> Se quiser, também posso te passar as opções de PIX e parcelamento desse violão.
 
 ---
 
@@ -95,17 +92,32 @@ Tools called: `search_products(query="Taylor 110e", available_only=false, limit=
 
 > Tá bom rs. Qual o endereço da loja? Vocês estão abertos agora?
 
-Tools called: `get_store_status()`
+Tools called: `get_policy(topic="about_store")`, `get_store_status()`
 
 <details><summary>Tool results</summary>
+
+`get_policy(topic="about_store")`
+
+```json
+{
+  "topic": "about_store",
+  "title": "1. Sobre a Empório da Música",
+  "text": "A Empório da Música é uma loja especializada em instrumentos musicais, fundada em 2008 em\nCampo Grande, Mato Grosso do Sul. Com mais de 15 anos de atuação no mercado, somos\nreferência regional na venda de instrumentos para músicos iniciantes, intermediários e profissionais.\nNosso catálogo abrange mais de 300 instrumentos de marcas nacionais e internacionais, incluindo\nguitarras, baixos, violões, baterias, teclados, instrumentos de sopro, cordas orquestrais e ukuleles.\nTrabalhamos exclusivamente com instrumentos musicais — não comercializamos acessórios como\ncordas, palhetas, cabos, cases, pedais ou amplificadores.\n1.1 Missão\nDemocratizar o acesso a instrumentos musicais de qualidade na região Centro-Oeste, oferecendo\natendimento especializado e preços competitivos, contribuindo para o desenvolvimento cultural e\nmusical da comunidade.\n1.2 Dados da Empresa\nCampo Informação\nRazão Social Empório da Música Instrumentos Musicais Ltda.\nNome Fantasia Empório da Música\nCNPJ 12.345.678/0001-90\nEndereço Rua 14 de Maio, 3200 — Centro, Campo Grande - MS, 79202-333\nTelefone / WhatsApp (67) 3341-4444\nE-mail contato@emporiodamusica.com.br\nFundação 2008"
+}
+```
 
 `get_store_status()`
 
 ```json
 {
-  "now": "domingo, 01/11/2026 00:38",
+  "now": "domingo, 01/11/2026 00:47",
   "is_open": false,
   "today_hours": "fechado",
+  "weekly_hours": {
+    "segunda a sexta-feira": "09:00 às 18:00",
+    "sábado": "09:00 às 13:00",
+    "domingo e feriados": "fechado"
+  },
   "next_opening": "terça-feira, 03/11/2026 às 09:00",
   "note": "Hours may be extended on special dates (Black Friday, store anniversary, Christmas). Municipal holidays are not in the calendar."
 }
@@ -115,6 +127,6 @@ Tools called: `get_store_status()`
 
 **Agente:**
 
-> Claro! A loja fica na **Rua 14 de Maio, 3200 — Centro, Campo Grande - MS, 79202-333**.
+> Claro! O endereço é Rua 14 de Maio, 3200 — Centro, Campo Grande - MS, 79202-333.
 >
-> Agora estamos **fechados**. Voltamos a abrir na **terça-feira, 03/11/2026 às 09:00**.
+> No momento estamos fechados. A próxima abertura é terça-feira, 03/11/2026 às 09:00.

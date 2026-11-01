@@ -2,7 +2,7 @@
 
 Non-trivial case. The agent verifies the customer, reads the order, and applies the 7-day regret, 30-day defect and 90-day warranty rules using today's date and the estimated delivery date as the receipt date.
 
-Generated on 01/11/2026 00:37 (store time).
+Generated on 01/11/2026 00:47 (store time).
 
 Model: `gpt-5.4-mini`
 
@@ -28,11 +28,11 @@ Tools called: `get_policy(topic="returns_exchanges")`
 
 **Agente:**
 
-> Pode sim, desde que seja compra online e esteja dentro de até 7 dias corridos após o recebimento. O produto precisa estar na embalagem original, sem sinais de uso e com todos os acessórios e manuais.
+> Pode sim, se a compra foi online e você estiver dentro de 7 dias corridos após o recebimento.
 >
-> Se for por arrependimento, o frete de devolução é por conta da loja e o reembolso sai na mesma forma de pagamento original em até 10 dias úteis.
+> O produto precisa estar na embalagem original, sem sinais de uso, com acessórios e manuais. Nesse caso, o reembolso sai na mesma forma de pagamento original e o frete de devolução fica por conta da loja.
 >
-> Se quiser, me manda o número do pedido que eu te ajudo a conferir certinho?
+> Se você quiser, eu também posso te orientar sobre troca por defeito ou me passar o número do pedido pra eu ver o prazo certinho?
 
 ---
 
@@ -95,13 +95,11 @@ Tools called: `get_order_status(order_id=5, email_or_phone="rafael.pereira@jmail
 
 **Agente:**
 
-> Rafael, verifiquei aqui e esse pedido já foi entregue.
+> Rafael, verifiquei seu pedido: ele foi entregue, mas o prazo de arrependimento já expirou.
 >
-> No seu caso, o prazo de arrependimento de 7 dias já passou: ele venceu em 25/01/2026. Então, infelizmente, essa opção não está mais aberta. Também já expiraram os prazos de troca por preferência e troca por defeito.
+> O sistema usou a data estimada de entrega como data de recebimento, então o prazo de 7 dias corridos terminou em 25/01/2026. Se o produto chegou depois dessa data, a equipe pode revisar o caso com você.
 >
-> Como referência, o sistema considera a data estimada de entrega como data de recebimento. Se o produto tiver chegado depois disso, a equipe pode revisar o caso por você.
->
-> Se quiser, eu também posso te passar o contato da equipe para avaliar essa situação?
+> Se quiser, também posso te passar o caminho para acionar a garantia ou verificar outra dúvida do pedido.
 
 ---
 
@@ -113,8 +111,8 @@ Tools called: none
 
 **Agente:**
 
-> Rafael, se aparecer defeito, o caminho é acionar a equipe para analisar o caso e orientar a próxima etapa.
+> Rafael, para defeito nesse pedido, o prazo de troca por defeito de fabricação também já expirou: terminou em 04/02/2026.
 >
-> Pelo que vi no pedido, o prazo de troca por defeito de 30 dias também já passou, e a garantia legal de 90 dias já expirou. A garantia do fabricante pode variar de 6 meses a 2 anos, conforme o certificado do produto.
+> A garantia legal de 90 dias terminou em 18/04/2026. A garantia do fabricante varia de 6 meses a 2 anos, conforme o certificado do produto, e a loja pode intermediar o atendimento.
 >
-> Se quiser, eu posso te orientar pelo WhatsApp/telefone (67) 3341-4444 ou pelo e-mail contato@emporiodamusica.com.br?
+> Se você quiser, posso te orientar a falar com a equipe pelo WhatsApp/telefone (67) 3341-4444 ou pelo e-mail contato@emporiodamusica.com.br.
