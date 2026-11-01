@@ -39,6 +39,7 @@ One line per decision. Business rules decided by the project owner are marked **
 - Loop tests use a scripted fake client and run the real tools; no network in tests or CI.
 - Interface: CLI (`emporio-agent`) with `/novo` and `/sair`, `--debug` to show tool calls and `--save` to export the conversation as Markdown. The challenge focuses on the agent; a CLI keeps testing and transcripts trivial.
 - A search that matches exactly one unavailable product returns its alternatives in the same call; in testing, the model otherwise often said "esgotado" without offering any.
+- Promotions come with a ready-made `display` text (original price, promotional price, % and campaign name); in testing the model sometimes dropped the percentage when composing it itself.
 
 ## Business rules (decided by the project owner)
 
