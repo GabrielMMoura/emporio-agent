@@ -27,3 +27,7 @@ One line per decision. Business rules decided by the project owner are marked **
 - After-sales windows (7-day regret and preference exchange, 30-day defect exchange from purchase, 90-day legal warranty) are computed by the tool from today's system date, with `estimated_delivery` as the receipt date. **[owner]**
 - Shipped orders past their estimated delivery get `delivery_overdue_days`, so the agent can acknowledge the delay instead of repeating a past date.
 - "Today" comes from `clock.now()` in America/Campo_Grande; tests freeze it.
+- Store open/closed is computed from policy section 2 plus national and Mato Grosso do Sul holidays (`holidays` package). Municipal holidays and extended hours on special dates are not modeled.
+- Installment rules follow the detailed policy 3.1 (2-3x min R$ 50 per installment, 4-6x min R$ 80, 7-12x min R$ 100). The summary table's "parcela mínima R$ 100,00" is read as the 7-12x rule. "Sem valor mínimo (exceto abaixo de R$ 50,00)" is read as "each installment must be at least R$ 50".
+- `calculate_payment_options` takes a `product_id`, not a price, so the price always comes from the data. PIX 5% is not applied to promotional prices. **[owner]**
+- Payment options are not computed for unavailable products (out of stock, discontinued, coming soon). **[owner]** (`coming_soon` is never sold)

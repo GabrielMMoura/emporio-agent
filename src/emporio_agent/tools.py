@@ -7,8 +7,10 @@ model only has to choose a tool and phrase the answer.
 import json
 from collections.abc import Callable
 from dataclasses import dataclass
-from datetime import date, timedelta
+from datetime import date, datetime, time, timedelta
 from decimal import Decimal
+
+import holidays
 
 from emporio_agent import clock
 from emporio_agent.data_store import (
@@ -19,7 +21,9 @@ from emporio_agent.data_store import (
     format_brl,
     get_store,
     normalize,
+    to_money,
 )
+from emporio_agent.policies import get_policy, policy_topics
 
 STOPWORDS = {"de", "da", "do", "das", "dos", "para", "com", "e", "o", "a", "os", "as", "um", "uma"}
 
@@ -304,6 +308,141 @@ def get_order_status(order_id: int, email_or_phone: str) -> dict:
     return result
 
 
+# --- Store hours ---------------------------------------------------------------------
+
+# Policy section 2. Weekday numbers follow datetime.weekday(): Monday = 0.
+OPENING_HOURS = {
+    0: (time(9), time(18)),
+    1: (time(9), time(18)),
+    2: (time(9), time(18)),
+    3: (time(9), time(18)),
+    4: (time(9), time(18)),
+    5: (time(9), time(13)),
+}
+WEEKDAYS_PT = ["segunda-feira", "terça-feira", "quarta-feira", "quinta-feira", "sexta-feira",
+               "sábado", "domingo"]  # fmt: skip
+
+# National and Mato Grosso do Sul holidays. Municipal holidays are not included.
+HOLIDAYS = holidays.country_holidays("BR", subdiv="MS")
+
+
+def _hours_on(day: date) -> tuple[time, time] | None:
+    if day in HOLIDAYS:
+        return None
+    return OPENING_HOURS.get(day.weekday())
+
+
+def _fmt_day(day: date) -> str:
+    return f"{WEEKDAYS_PT[day.weekday()]}, {_fmt_date(day)}"
+
+
+def get_store_status() -> dict:
+    now = clock.now()
+    today = now.date()
+    hours = _hours_on(today)
+    is_open = hours is not None and hours[0] <= now.time() < hours[1]
+
+    result = {
+        "now": f"{_fmt_day(today)} {now.strftime('%H:%M')}",
+        "is_open": is_open,
+        "today_hours": f"{hours[0]:%H:%M} às {hours[1]:%H:%M}" if hours else "fechado",
+    }
+    if today in HOLIDAYS:
+        result["holiday"] = HOLIDAYS.get(today)
+    if is_open:
+        result["closes_at"] = f"{hours[1]:%H:%M}"
+    else:
+        for offset in range(15):
+            day = today + timedelta(days=offset)
+            day_hours = _hours_on(day)
+            if day_hours and datetime.combine(day, day_hours[0], now.tzinfo) > now:
+                result["next_opening"] = f"{_fmt_day(day)} às {day_hours[0]:%H:%M}"
+                break
+    result["note"] = (
+        "Hours may be extended on special dates (Black Friday, store anniversary, Christmas). "
+        "Municipal holidays are not in the calendar."
+    )
+    return result
+
+
+# --- Payment ------------------------------------------------------------------------
+
+PIX_DISCOUNT = Decimal("0.05")
+COMBINED_PAYMENT_MIN = Decimal("2000")
+# Policy 3.1: (max installments in the bracket, minimum installment value).
+INSTALLMENT_BRACKETS = [(3, Decimal("50")), (6, Decimal("80")), (12, Decimal("100"))]
+
+
+def _min_installment(n: int) -> Decimal:
+    for max_n, minimum in INSTALLMENT_BRACKETS:
+        if n <= max_n:
+            return minimum
+    raise ValueError(f"Up to 12 installments, got {n}")
+
+
+def calculate_payment_options(product_id: int, quantity: int = 1) -> dict:
+    product = get_store().products.get(product_id)
+    if product is None:
+        return {"error": f"Product {product_id} not found."}
+    if quantity < 1:
+        return {"error": "Quantity must be at least 1."}
+    if product.availability != "available":
+        return {
+            "product": product.name,
+            "availability": product.availability,
+            "error": "Product is not available for sale; there are no payment options.",
+        }
+
+    total = product.final_price * quantity
+    result: dict = {"product": product.name, "quantity": quantity}
+    if product.promotion:
+        result["promotion"] = {
+            "name": product.promotion.description,
+            "original_price": format_brl(product.price * quantity),
+            "discount_percent": product.promotion.discount_percent,
+        }
+    result["price"] = format_brl(total)
+
+    if product.promotion:
+        result["pix"] = {
+            "total": format_brl(total),
+            "note": "The 5% PIX discount does not stack with promotions (policy 6.2).",
+        }
+    else:
+        result["pix"] = {
+            "total": format_brl(to_money(total * (1 - PIX_DISCOUNT))),
+            "discount": "5% sobre o preço de tabela",
+        }
+    result["debit_card"] = {"total": format_brl(total)}
+    result["boleto"] = {"total": format_brl(total), "note": "compensação em até 3 dias úteis"}
+
+    options = []
+    for n in range(1, 13):
+        value = to_money(total / n)
+        if n == 1 or value >= _min_installment(n):
+            options.append({"installments": n, "value": format_brl(value)})
+    result["credit_card"] = {
+        "interest": "sem juros",
+        "max_installments": options[-1]["installments"],
+        "options": options,
+        "rule": "2-3x: parcela mínima R$ 50; 4-6x: mínimo R$ 80; 7-12x: mínimo R$ 100.",
+    }
+    result["combined_payment_allowed"] = total > COMBINED_PAYMENT_MIN
+    return result
+
+
+POLICY_TOPIC_HELP = (
+    "about_store: who we are, address, phone/WhatsApp, e-mail, what we do NOT sell; "
+    "hours: opening hours; payment: payment methods and installment rules; "
+    "returns_exchanges: regret, defect and preference exchanges, non-eligible items; "
+    "shipping: delivery fees, deadlines, carriers, tracking; "
+    "promotions: campaigns and promotion rules; "
+    "customer_service: service guidelines, out-of-stock/discontinued/complaint handling; "
+    "warranty: legal and manufacturer warranty; privacy: personal data (LGPD); "
+    "final_provisions: when in doubt, escalate to management."
+)
+
+
 # --- Registry ------------------------------------------------------------------------
 
 
@@ -387,6 +526,37 @@ def build_tools() -> dict[str, Tool]:
                     },
                 },
                 "required": ["order_id", "email_or_phone"],
+            },
+        ),
+        Tool(
+            get_policy,
+            "Read a section of the store's policy manual. Use for any question about rules: "
+            "returns, exchanges, warranty, shipping, payment methods, promotions rules, "
+            "address and contact, privacy. Topics: " + POLICY_TOPIC_HELP,
+            {
+                "type": "object",
+                "properties": {"topic": {"type": "string", "enum": policy_topics()}},
+                "required": ["topic"],
+            },
+        ),
+        Tool(
+            get_store_status,
+            "Whether the store is open right now (store time zone, holidays included), "
+            "today's hours and the next opening time.",
+            {"type": "object", "properties": {}},
+        ),
+        Tool(
+            calculate_payment_options,
+            "Exact payment options for a product: PIX price (5% off, not combined with "
+            "promotions), debit, boleto and every allowed credit card installment plan. "
+            "Use whenever the customer asks about PIX, installments or how much they will pay.",
+            {
+                "type": "object",
+                "properties": {
+                    "product_id": {"type": "integer"},
+                    "quantity": {"type": "integer", "description": "Default 1."},
+                },
+                "required": ["product_id"],
             },
         ),
     ]
