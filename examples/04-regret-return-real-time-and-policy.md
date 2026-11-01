@@ -2,7 +2,7 @@
 
 Non-trivial case. The agent verifies the customer, reads the order, and applies the 7-day regret, 30-day defect and 90-day warranty rules using today's date and the estimated delivery date as the receipt date.
 
-Generated on 01/11/2026 00:34 (store time).
+Generated on 01/11/2026 00:37 (store time).
 
 Model: `gpt-5.4-mini`
 
@@ -28,9 +28,11 @@ Tools called: `get_policy(topic="returns_exchanges")`
 
 **Agente:**
 
-> Pode sim, se a compra foi online e você pedir a devolução em até 7 dias corridos após o recebimento. O produto precisa estar na embalagem original, sem sinais de uso, com todos os acessórios e manuais.
+> Pode sim, desde que seja compra online e esteja dentro de até 7 dias corridos após o recebimento. O produto precisa estar na embalagem original, sem sinais de uso e com todos os acessórios e manuais.
 >
-> Nesse caso, o reembolso sai na mesma forma de pagamento original em até 10 dias úteis, e o frete de devolução fica por conta da loja. Se quiser, me passa o número do pedido que eu te ajudo a conferir se ainda está dentro do prazo.
+> Se for por arrependimento, o frete de devolução é por conta da loja e o reembolso sai na mesma forma de pagamento original em até 10 dias úteis.
+>
+> Se quiser, me manda o número do pedido que eu te ajudo a conferir certinho?
 
 ---
 
@@ -93,9 +95,13 @@ Tools called: `get_order_status(order_id=5, email_or_phone="rafael.pereira@jmail
 
 **Agente:**
 
-> Rafael, verifiquei seu pedido e ele foi entregue. No seu caso, o prazo de arrependimento de 7 dias já passou: a data considerada de recebimento foi 18/01/2026 e o prazo terminou em 25/01/2026.
+> Rafael, verifiquei aqui e esse pedido já foi entregue.
 >
-> Também já passaram os prazos de troca por preferência e por defeito. Se quiser, ainda posso te orientar sobre a garantia do fabricante, que varia conforme o certificado do produto.
+> No seu caso, o prazo de arrependimento de 7 dias já passou: ele venceu em 25/01/2026. Então, infelizmente, essa opção não está mais aberta. Também já expiraram os prazos de troca por preferência e troca por defeito.
+>
+> Como referência, o sistema considera a data estimada de entrega como data de recebimento. Se o produto tiver chegado depois disso, a equipe pode revisar o caso por você.
+>
+> Se quiser, eu também posso te passar o contato da equipe para avaliar essa situação?
 
 ---
 
@@ -103,24 +109,12 @@ Tools called: `get_order_status(order_id=5, email_or_phone="rafael.pereira@jmail
 
 > E se o violão apresentar defeito, o que eu faço?
 
-Tools called: `get_policy(topic="warranty")`
-
-<details><summary>Tool results</summary>
-
-`get_policy(topic="warranty")`
-
-```json
-{
-  "topic": "warranty",
-  "title": "8. Garantia",
-  "text": "8.1 Garantia Legal\nConforme o Código de Defesa do Consumidor, todos os produtos possuem garantia legal de 90\n(noventa) dias contra defeitos de fabricação, contados a partir da data de recebimento pelo cliente.\n8.2 Garantia do Fabricante\nAlém da garantia legal, a maioria dos fabricantes oferece garantia própria que pode variar de 6\nmeses a 2 anos. Os prazos e condições específicos estão detalhados no certificado de garantia que\nacompanha cada produto.\n8.3 O que Não Cobre a Garantia\n• Desgaste natural de peças (trastes, cordas, feltros, palhetas de sopro).\n• Danos por mau uso, queda, exposição a condições climáticas extremas.\n• Modificações ou reparos realizados por terceiros não autorizados.\n• Danos estéticos que não afetem a funcionalidade do instrumento."
-}
-```
-
-</details>
+Tools called: none
 
 **Agente:**
 
-> Se for defeito de fabricação, a garantia legal cobre por 90 dias a partir do recebimento. No seu pedido, esse prazo já passou.
+> Rafael, se aparecer defeito, o caminho é acionar a equipe para analisar o caso e orientar a próxima etapa.
 >
-> Mesmo assim, a garantia do fabricante pode continuar valendo, porque ela varia de 6 meses a 2 anos, conforme o certificado do produto. O ideal é separar o certificado/nota e procurar a assistência indicada pelo fabricante; se você quiser, eu também posso te orientar com o que costuma ser aceito na garantia.
+> Pelo que vi no pedido, o prazo de troca por defeito de 30 dias também já passou, e a garantia legal de 90 dias já expirou. A garantia do fabricante pode variar de 6 meses a 2 anos, conforme o certificado do produto.
+>
+> Se quiser, eu posso te orientar pelo WhatsApp/telefone (67) 3341-4444 ou pelo e-mail contato@emporiodamusica.com.br?
