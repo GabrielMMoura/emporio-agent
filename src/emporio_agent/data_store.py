@@ -20,6 +20,13 @@ CSV_PREFIX = "desafio_tecnico_ai_eng - "
 
 CENT = Decimal("0.01")
 
+# Brands found in product names and descriptions (normalized).
+KNOWN_BRANDS = {
+    "crafter", "fender", "giannini", "gibson", "ibanez", "kala", "kalani", "korg",
+    "martin", "music man", "nord", "ohana", "pearl", "prs", "roland", "rozini",
+    "shelby", "tagima", "takamine", "tama", "taylor", "yamaha",
+}  # fmt: skip
+
 
 def to_money(value: str | Decimal) -> Decimal:
     return Decimal(value).quantize(CENT, rounding=ROUND_HALF_UP)
@@ -82,6 +89,17 @@ class Product:
         if self.stock <= 0:
             return "out_of_stock"
         return "available"
+
+    @property
+    def description_is_reliable(self) -> bool:
+        """False when the description names a brand that is not in the product name.
+
+        Several generated rows contradict themselves (e.g. "Bateria Acústica Yamaha Kit 1"
+        described as a Pearl Export). Name and specs are treated as authoritative.
+        """
+        name = normalize(self.name)
+        description = normalize(self.description)
+        return not any(b in description and b not in name for b in KNOWN_BRANDS)
 
     @property
     def final_price(self) -> Decimal:

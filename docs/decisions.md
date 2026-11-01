@@ -17,3 +17,8 @@ One line per decision. Business rules decided by the project owner are marked **
 - Policies: the 8-page PDF is split by its 10 top-level section titles into `policies.json`, served by `get_policy(topic)`. No embeddings or vector DB: the model picks a topic from an enum, which is exact and debuggable at this size.
 - PDF parsing uses `pdfplumber` (dev-only); `pypdf` returned one word per line for this file. The JSON is committed so runtime needs no PDF parser.
 - Official contact: (67) 3341-4444 and contato@emporiodamusica.com.br (cover + section 1.2). The build script rewrites the conflicting (67) 3321-4500 (section 7) and the accented e-mail (section 1.2 table). **[owner]**
+- Product search: accent/case-insensitive substring match on name, category, specs and description, with light plural handling (violões/violão). All terms must match; otherwise partial matches are returned and flagged. No fuzzy/embedding search: 65 products.
+- `search_products` returns unavailable products too, flagged by `availability`, so asking for a sold-out model by name gets "esgotado" plus alternatives instead of "not found". `available_only` is for browsing.
+- Price filters use the price the customer pays (promotional price when a promotion is active).
+- Alternatives for unavailable products: same category, available, within ±30% of the price, closest first, top 3 (computed by the tool, not the model). **[owner]** rule, range is a technical choice.
+- Descriptions that mention a brand absent from the product name (rows 135, 137, 139, 140, 142, 144) are withheld from answers and search; name and specs are treated as authoritative.

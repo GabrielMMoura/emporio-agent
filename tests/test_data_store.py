@@ -91,3 +91,13 @@ def test_format_brl(value, expected):
 
 def test_normalize_strips_accents_case_and_punctuation():
     assert normalize("Violão Elétrico KA-ABP-CTG") == "violao eletrico ka abp ctg"
+
+
+@pytest.mark.parametrize("product_id", [135, 137, 139, 140, 142, 144])
+def test_description_naming_another_brand_is_unreliable(store, product_id):
+    assert not store.products[product_id].description_is_reliable
+
+
+@pytest.mark.parametrize("product_id", [81, 95, 131, 141, 143])
+def test_consistent_descriptions_are_reliable(store, product_id):
+    assert store.products[product_id].description_is_reliable
