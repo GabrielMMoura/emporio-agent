@@ -275,6 +275,11 @@ def _after_sales(order: Order, today: date) -> dict:
 
 def get_order_status(order_id: int, email_or_phone: str) -> dict:
     """Order data is only returned when the e-mail or phone matches the order's customer."""
+    if not email_or_phone.strip():
+        return {
+            "verified": False,
+            "error": "No e-mail or phone given. Ask the customer for one before calling again.",
+        }
     store = get_store()
     order = store.orders.get(order_id)
     if order is None:

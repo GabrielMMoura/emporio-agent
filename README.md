@@ -36,7 +36,7 @@ Inside the chat, `/novo` starts a new conversation and `/sair` quits.
 Other commands:
 
 ```bash
-uv run pytest                            # 127 tests, no network, no API key needed
+uv run pytest                            # 128 tests, no network, no API key needed
 uv run ruff check && uv run ruff format --check
 uv run python scripts/run_examples.py    # regenerate examples/ (calls the API)
 uv run python scripts/build_policies.py  # rebuild data/processed/policies.json from the PDF
@@ -203,7 +203,9 @@ change that invalidates them fails the build.
 - **No evaluation suite for the LLM.** Tools are fully unit-tested, but agent behavior was
   checked by reading transcripts. Next step: a set of 30-50 scripted conversations with
   assertions on tools called and on facts in the reply (prices, deadlines, refusals), run on
-  every prompt or model change.
+  every prompt or model change. A first version of this was done by hand for the order flow:
+  running it 10-15 times showed it worked 7/10 times; after a prompt change and an
+  empty-identity guard in the tool, 15/15.
 - **Shipping cost is not calculated**: it needs CEP, weight and dimensions, which the data does
   not have. The agent explains the rules and refers to the team.
 - **Session-only memory** and no history trimming; fine for chat sessions, not for a long-lived
@@ -218,7 +220,7 @@ change that invalidates them fails the build.
 
 ## Quality checks
 
-- 127 `pytest` tests: every tool, the data loader, policy splitting, the agent loop (with a
+- 128 `pytest` tests: every tool, the data loader, policy splitting, the agent loop (with a
   scripted fake LLM and the real tools), the CLI and the known data anomalies. No network.
 - `ruff` lint and format.
 - `pre-commit` runs ruff, blocks private keys, OpenAI-style API keys and `.env` files.

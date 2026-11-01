@@ -40,13 +40,22 @@ def test_order_is_returned_when_identity_matches(today, identity):
 
 @pytest.mark.parametrize(
     "identity",
-    ["lucas.mendes@jmail.com", "(67) 99812-3456", "7821", "", "anacarol.ferreira@coldmail"],
+    ["lucas.mendes@jmail.com", "(67) 99812-3456", "7821", "anacarol.ferreira@coldmail"],
 )
 def test_order_is_withheld_when_identity_does_not_match(today, identity):
     result = get_order_status(8, identity)
     assert result["verified"] is False
     assert "status" not in result
     assert "items" not in result
+
+
+@pytest.mark.parametrize("identity", ["", "   "])
+def test_missing_identity_asks_for_it_without_revealing_anything(today, identity):
+    # Regression: the model sometimes called the tool with an empty e-mail before asking.
+    result = get_order_status(8, identity)
+    assert result["verified"] is False
+    assert "Ask the customer" in result["error"]
+    assert result == get_order_status(999, identity)
 
 
 def test_unknown_order_gives_same_answer_as_wrong_identity(today):

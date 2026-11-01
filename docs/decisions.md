@@ -41,6 +41,7 @@ One line per decision. Business rules decided by the project owner are marked **
 - A search that matches exactly one unavailable product returns its alternatives in the same call; in testing, the model otherwise often said "esgotado" without offering any.
 - Promotions come with a ready-made `display` text (original price, promotional price, % and campaign name); in testing the model sometimes dropped the percentage when composing it itself.
 - `get_store_status` also returns the weekly schedule: asked "do you open on Saturday?" on a Sunday, the model otherwise answered from memory or not at all.
+- `get_order_status` with an empty e-mail/phone returns "ask the customer" instead of a verification failure; the model sometimes called it before asking, and then told the customer the data "still" did not match.
 
 ## Business rules (decided by the project owner)
 
