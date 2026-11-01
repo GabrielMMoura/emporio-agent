@@ -85,6 +85,7 @@ def test_promotion_shows_original_price_and_discount():
         "original_price": "R$ 2.399,00",
         "discount_percent": 18,
         "promotional_price": "R$ 1.967,18",
+        "display": "de R$ 2.399,00 por R$ 1.967,18 (18% de desconto, Desconto Exclusivo)",
     }
     assert details["price"] == "R$ 1.967,18"
 

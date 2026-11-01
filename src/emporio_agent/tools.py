@@ -62,6 +62,8 @@ def _product_summary(product: Product) -> dict:
             "original_price": format_brl(product.price),
             "discount_percent": product.promotion.discount_percent,
             "promotional_price": format_brl(product.final_price),
+            "display": f"de {format_brl(product.price)} por {format_brl(product.final_price)} "
+            f"({product.promotion.discount_percent}% de desconto, {product.promotion.description})",
         }
     return summary
 
