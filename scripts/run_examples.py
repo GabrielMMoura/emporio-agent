@@ -1,10 +1,13 @@
 """Runs the example scenarios against the real model and saves each conversation to examples/.
 
-    uv run python scripts/run_examples.py
+    uv run python scripts/run_examples.py        # all scenarios
+    uv run python scripts/run_examples.py 03     # only files starting with "03"
 
 Transcripts are generated, never edited by hand. Results depend on today's date
 (store hours, return windows), which is printed in each file.
 """
+
+import sys
 
 from emporio_agent import clock
 from emporio_agent.agent import create_agent
@@ -83,7 +86,10 @@ def main() -> None:
     run_at = clock.now().strftime("%d/%m/%Y %H:%M")
     EXAMPLES_DIR.mkdir(exist_ok=True)
 
+    only = sys.argv[1:]
     for scenario in SCENARIOS:
+        if only and not any(scenario["file"].startswith(prefix) for prefix in only):
+            continue
         agent.reset()
         turns = [agent.ask(message) for message in scenario["messages"]]
         description = f"{scenario['description']}\n\nGenerated on {run_at} (store time)."
