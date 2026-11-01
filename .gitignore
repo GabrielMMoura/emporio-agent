@@ -1,0 +1,7 @@
+.env
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+PLANO_CLAUDE_CODE.md
+desafio_tecnico_ai_eng_artefact.pdf
