@@ -150,3 +150,15 @@ def test_partial_matches_are_ranked_by_relevance_before_price():
     result = search_products(query="takamine nylon theremin", limit=20)
     assert result["note"]
     assert result["products"][0]["name"] == "Takamine GC1CE Elétrico Nylon Natural"
+
+
+def test_specific_lookup_of_unavailable_product_includes_alternatives():
+    result = search_products(query="giannini gf-3d")
+    assert [p["product_id"] for p in result["products"]] == [96]
+    assert len(result["alternatives"]) == 3
+    assert all(a["availability"] == "available" for a in result["alternatives"])
+
+
+def test_available_or_multiple_matches_have_no_alternatives():
+    assert "alternatives" not in search_products(query="takamine gd20")
+    assert "alternatives" not in search_products(query="giannini")

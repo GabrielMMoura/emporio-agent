@@ -172,6 +172,9 @@ def search_products(
         "total_matches": len(products),
         "products": [_product_summary(p) for p in products[:limit]],
     }
+    # A lookup that pins down one unavailable product comes with alternatives right away.
+    if query and not partial and len(products) == 1 and products[0].availability != "available":
+        result["alternatives"] = _alternatives(products[0])
     if partial:
         result["note"] = "No product matched every search term; showing partial matches."
     return result
@@ -493,7 +496,8 @@ def build_tools() -> dict[str, Tool]:
                     "available_only": {
                         "type": "boolean",
                         "description": "True to return only products available for sale. "
-                        "Use when the customer is browsing options.",
+                        "Use when the customer is browsing options; never when looking up "
+                        "a specific product, whose status you need to see.",
                     },
                     "limit": {"type": "integer", "description": "Max results (default 10)."},
                 },
