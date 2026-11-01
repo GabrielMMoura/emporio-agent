@@ -38,3 +38,17 @@ One line per decision. Business rules decided by the project owner are marked **
 - History is kept in memory for the session only. No trimming: sessions are short; a long-running channel would need summarization or a window.
 - Loop tests use a scripted fake client and run the real tools; no network in tests or CI.
 - Interface: CLI (`emporio-agent`) with `/novo` and `/sair`, `--debug` to show tool calls and `--save` to export the conversation as Markdown. The challenge focuses on the agent; a CLI keeps testing and transcripts trivial.
+- A search that matches exactly one unavailable product returns its alternatives in the same call; in testing, the model otherwise often said "esgotado" without offering any.
+
+## Business rules (decided by the project owner)
+
+- The agent answers in Brazilian Portuguese; code and docs are in English.
+- Stock 0 or `discontinued`: unavailable; suggest alternatives in the same category and price range.
+- `coming_soon`: "em breve", not sold, even with stock > 0.
+- Only `is_active = 1` promotions exist. A requested inactive promotion is declined transparently with the current price.
+- PIX 5% does not stack with promotions. Promotional prices always show original price and discount %.
+- Order data only with order number + e-mail or phone of the buyer (LGPD).
+- Regret window uses today's system date; `estimated_delivery` stands in for the missing receipt date.
+- Accessories and off-topic requests are declined politely, and the agent returns to store topics.
+- Complaints: acknowledge, say it will be registered, answer within 24 business hours. Not persisted (known limitation).
+- When a policy does not cover the case: do not improvise; refer to the human team.
