@@ -36,7 +36,7 @@ Inside the chat, `/novo` starts a new conversation and `/sair` quits.
 Other commands:
 
 ```bash
-uv run pytest                            # 126 tests, no network, no API key needed
+uv run pytest                            # 127 tests, no network, no API key needed
 uv run ruff check && uv run ruff format --check
 uv run python scripts/run_examples.py    # regenerate examples/ (calls the API)
 uv run python scripts/build_policies.py  # rebuild data/processed/policies.json from the PDF
@@ -218,7 +218,7 @@ change that invalidates them fails the build.
 
 ## Quality checks
 
-- 126 `pytest` tests: every tool, the data loader, policy splitting, the agent loop (with a
+- 127 `pytest` tests: every tool, the data loader, policy splitting, the agent loop (with a
   scripted fake LLM and the real tools), the CLI and the known data anomalies. No network.
 - `ruff` lint and format.
 - `pre-commit` runs ruff, blocks private keys, OpenAI-style API keys and `.env` files.

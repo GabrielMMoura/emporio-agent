@@ -35,6 +35,12 @@ def test_sunday_before_a_holiday_skips_to_tuesday(at):
     assert status["next_opening"] == "terça-feira, 03/11/2026 às 09:00"
 
 
+def test_status_always_includes_weekly_schedule(at):
+    # Regression: "do you open on Saturday?" asked on a Sunday got no Saturday hours.
+    at(2026, 11, 1, 10, 0)
+    assert get_store_status()["weekly_hours"]["sábado"] == "09:00 às 13:00"
+
+
 def test_closed_on_a_holiday(at):
     at(2026, 11, 2, 11, 0)
     status = get_store_status()

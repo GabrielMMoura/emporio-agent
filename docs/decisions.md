@@ -40,6 +40,7 @@ One line per decision. Business rules decided by the project owner are marked **
 - Interface: CLI (`emporio-agent`) with `/novo` and `/sair`, `--debug` to show tool calls and `--save` to export the conversation as Markdown. The challenge focuses on the agent; a CLI keeps testing and transcripts trivial.
 - A search that matches exactly one unavailable product returns its alternatives in the same call; in testing, the model otherwise often said "esgotado" without offering any.
 - Promotions come with a ready-made `display` text (original price, promotional price, % and campaign name); in testing the model sometimes dropped the percentage when composing it itself.
+- `get_store_status` also returns the weekly schedule: asked "do you open on Saturday?" on a Sunday, the model otherwise answered from memory or not at all.
 
 ## Business rules (decided by the project owner)
 

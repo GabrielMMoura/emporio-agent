@@ -327,6 +327,12 @@ OPENING_HOURS = {
 WEEKDAYS_PT = ["segunda-feira", "terça-feira", "quarta-feira", "quinta-feira", "sexta-feira",
                "sábado", "domingo"]  # fmt: skip
 
+WEEKLY_HOURS = {
+    "segunda a sexta-feira": "09:00 às 18:00",
+    "sábado": "09:00 às 13:00",
+    "domingo e feriados": "fechado",
+}
+
 # National and Mato Grosso do Sul holidays. Municipal holidays are not included.
 HOLIDAYS = holidays.country_holidays("BR", subdiv="MS")
 
@@ -351,6 +357,7 @@ def get_store_status() -> dict:
         "now": f"{_fmt_day(today)} {now.strftime('%H:%M')}",
         "is_open": is_open,
         "today_hours": f"{hours[0]:%H:%M} às {hours[1]:%H:%M}" if hours else "fechado",
+        "weekly_hours": WEEKLY_HOURS,
     }
     if today in HOLIDAYS:
         result["holiday"] = HOLIDAYS.get(today)
@@ -548,7 +555,8 @@ def build_tools() -> dict[str, Tool]:
         Tool(
             get_store_status,
             "Whether the store is open right now (store time zone, holidays included), "
-            "today's hours and the next opening time.",
+            "today's hours, the weekly schedule and the next opening time. Use for any "
+            "question about opening hours.",
             {"type": "object", "properties": {}},
         ),
         Tool(
