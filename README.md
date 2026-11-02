@@ -36,7 +36,7 @@ Inside the chat, `/novo` starts a new conversation and `/sair` quits.
 Other commands:
 
 ```bash
-uv run pytest                            # 128 tests, no network, no API key needed
+uv run pytest                            # 133 tests, no network, no API key needed
 uv run ruff check && uv run ruff format --check
 uv run python scripts/run_examples.py    # regenerate examples/ (calls the API; pass 03 for one)
 uv run python scripts/build_policies.py  # rebuild data/processed/policies.json from the PDF
@@ -126,8 +126,15 @@ or free-form content, I would move to chunked retrieval with embeddings.
 
 **Data handling.** 65 products and 20 orders fit in memory as dataclasses
 ([`data_store.py`](src/emporio_agent/data_store.py)). Money is `Decimal`; availability is
-derived in one place, where `discontinued` and `coming_soon` override stock. Only active
-promotions are loaded, so an expired one cannot leak into an answer.
+derived in one place, where `discontinued` and `coming_soon` override stock. Only the active
+promotion affects a price. Expired promotions are kept in a separate `expired_promotions` field,
+marked as not valid, so the agent can tell a customer that a promotion ended instead of
+hedging.
+
+**Prices shown to the customer.** Tools return a `price_display` string built by code, e.g.
+`R$ 439,20 (de R$ 549,00, 20% de desconto)`, and the prompt requires copying it literally. A
+prompt rule alone ("always show original price and %") was followed only about half the time
+in PIX answers.
 
 **Model.** `gpt-5.4-mini`. I started with `gpt-4.1-mini` and compared both on the same
 scenarios: the older model asked for e-mail *and* phone when either is enough, called a
@@ -162,9 +169,9 @@ The data has inconsistencies, some clearly on purpose. How each one is handled:
    alternatives are offered.
 3. **`coming_soon` with stock** (Kala KA-ABP-CTG, id 130, stock 2): "em breve", not sold. It
    also appears in orders 3 (delivered) and 14 (pending); those are kept as historical data.
-4. **Promotions**: 25 rows, only 4 active (products 90, 94, 121, 127). Inactive ones are never
-   offered; when a customer asks about one, the agent says it is not active and gives the
-   current price (example 02).
+4. **Promotions**: 25 rows, only 4 active (products 90, 94, 121, 127). Inactive ones never
+   change a price and are never offered. When a customer asks about one, the agent says it has
+   ended and gives the current price (example 02).
 5. **Two phone numbers**: (67) 3341-4444 (cover and section 1.2) vs (67) 3321-4500 (section 7).
    The official one is 3341-4444; the policy build step rewrites the other.
 6. **E-mail with an accent** (`contato@empóriodamusica.com.br` in section 1.2) vs
@@ -208,13 +215,14 @@ change that invalidates them fails the build.
   empty-identity guard in the tool. The remaining failure mode: the agent sometimes forgets an
   order number given in the first message and asks for it again. It never discloses data
   without verification, since that check is in code.
-- **Promotion label in payment answers.** Product lists and price answers show original price,
-  promotional price and % reliably, but when asked only "quanto fica no PIX?" for a promoted
-  item, the model shows the full label about half the time; otherwise it says the price is
-  already promotional without the original price and %. Three attempts (a ready-made label in
-  the tool, an explicit prompt rule, embedding the label in the price string) did not make it
-  reliable; the tool does return the label. A deterministic fix would be to post-process
-  replies, or to render price answers from templates.
+- **Promotion label in payment answers.** Asked "quanto fica no PIX o [produto]?" 20 times
+  across the 4 promoted products, the reply contained the code-built `price_display` verbatim
+  19/20 times (about half before `price_display`). The miss quoted the promotional price
+  without the original price and %. A fully deterministic fix would post-process replies or
+  render price answers from templates.
+- **Expired promotions.** The example 02 question ("Vi que tinha uma Oferta Especial de 12%,
+  ainda vale?") was run 10 times: 10/10 said clearly that it ended and gave the current price,
+  none quoted the old discount. Only that scenario was measured.
 - **Shipping cost is not calculated**: it needs CEP, weight and dimensions, which the data does
   not have. The agent explains the rules and refers to the team.
 - **Session-only memory** and no history trimming; fine for chat sessions, not for a long-lived
@@ -229,7 +237,7 @@ change that invalidates them fails the build.
 
 ## Quality checks
 
-- 128 `pytest` tests: every tool, the data loader, policy splitting, the agent loop (with a
+- 133 `pytest` tests: every tool, the data loader, policy splitting, the agent loop (with a
   scripted fake LLM and the real tools), the CLI and the known data anomalies. No network.
 - `ruff` lint and format.
 - `pre-commit` runs ruff, blocks private keys, OpenAI-style API keys and `.env` files.

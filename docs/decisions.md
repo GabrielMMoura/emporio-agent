@@ -12,7 +12,7 @@ One line per decision. Business rules decided by the project owner are marked **
 - Data lives in plain in-memory dataclasses, not SQLite/pandas: 65 products and 20 orders do not need a query engine, and there is no SQL for the LLM to get wrong. A real database would replace `data_store.py` only.
 - Money uses `Decimal` rounded half-up to cents and is formatted by code as `R$ 1.234,56`; the model never formats or computes prices.
 - Availability is derived in one place (`Product.availability`): `discontinued` and `coming_soon` win over stock; `active` with stock 0 is `out_of_stock`.
-- Only `is_active = 1` promotions are loaded; the agent cannot see expired ones. **[owner]**
+- Only `is_active = 1` promotions affect prices and can be offered. **[owner]** Inactive ones are loaded separately as `expired_promotions` (marked not valid) so the agent can say a promotion ended (policy 7.3) instead of hedging.
 - An empty `OPENAI_BASE_URL` falls back to the official URL; the OpenAI SDK would otherwise treat `""` as the endpoint.
 - Policies: the 8-page PDF is split by its 10 top-level section titles into `policies.json`, served by `get_policy(topic)`. No embeddings or vector DB: the model picks a topic from an enum, which is exact and debuggable at this size.
 - PDF parsing uses `pdfplumber` (dev-only); `pypdf` returned one word per line for this file. The JSON is committed so runtime needs no PDF parser.
@@ -39,7 +39,7 @@ One line per decision. Business rules decided by the project owner are marked **
 - Loop tests use a scripted fake client and run the real tools; no network in tests or CI.
 - Interface: CLI (`emporio-agent`) with `/novo` and `/sair`, `--debug` to show tool calls and `--save` to export the conversation as Markdown. The challenge focuses on the agent; a CLI keeps testing and transcripts trivial.
 - A search that matches exactly one unavailable product returns its alternatives in the same call; in testing, the model otherwise often said "esgotado" without offering any.
-- Promotions come with a ready-made `display` text (original price, promotional price, % and campaign name); in testing the model sometimes dropped the percentage when composing it itself.
+- Tools return `price_display`, built by code (e.g. `R$ 439,20 (de R$ 549,00, 20% de desconto)`), and the prompt requires copying it literally. A prompt rule alone was followed about half the time in PIX answers; with `price_display`, 19/20.
 - `get_store_status` also returns the weekly schedule: asked "do you open on Saturday?" on a Sunday, the model otherwise answered from memory or not at all.
 - `get_order_status` with an empty e-mail/phone returns "ask the customer" instead of a verification failure; the model sometimes called it before asking, and then told the customer the data "still" did not match.
 
