@@ -2,7 +2,7 @@
 
 Price lookup, payment math done by a tool (PIX 5%, 10x), and a customer asking for a promotion that exists in the data but is no longer active.
 
-Generated on 01/11/2026 00:47 (store time).
+Generated on 01/11/2026 23:36 (store time).
 
 Model: `gpt-5.4-mini`
 
@@ -27,7 +27,15 @@ Tools called: `search_products(query="Takamine GD20", available_only=false, limi
       "availability": "available",
       "availability_label": "disponível",
       "price": "R$ 2.199,00",
-      "units_in_stock": 5
+      "price_display": "R$ 2.199,00",
+      "units_in_stock": 5,
+      "expired_promotions": [
+        {
+          "name": "Oferta Especial",
+          "discount_percent": 12,
+          "status": "encerrada, não vigente: não oferecer nem aplicar"
+        }
+      ]
     }
   ]
 }
@@ -37,7 +45,7 @@ Tools called: `search_products(query="Takamine GD20", available_only=false, limi
 
 **Agente:**
 
-> O Takamine GD20 Dreadnought Natural está por R$ 2.199,00 e está disponível. Se quiser, também posso te passar as opções de pagamento.
+> O Takamine GD20 Dreadnought Natural está por R$ 2.199,00. Se quiser, também posso te passar as opções de pagamento.
 
 ---
 
@@ -56,6 +64,7 @@ Tools called: `calculate_payment_options(product_id=95, quantity=1)`
   "product": "Takamine GD20 Dreadnought Natural",
   "quantity": 1,
   "price": "R$ 2.199,00",
+  "price_display": "R$ 2.199,00",
   "pix": {
     "total": "R$ 2.089,05",
     "discount": "5% sobre o preço de tabela"
@@ -132,7 +141,7 @@ Tools called: `calculate_payment_options(product_id=95, quantity=1)`
 
 > No PIX fica R$ 2.089,05.
 >
-> Em 10x no cartão fica R$ 219,90 por parcela, sem juros.
+> Em 10x sem juros, fica R$ 219,90 por parcela.
 
 ---
 
@@ -157,7 +166,15 @@ Tools called: `search_products(query="Takamine GD20", available_only=false, limi
       "availability": "available",
       "availability_label": "disponível",
       "price": "R$ 2.199,00",
-      "units_in_stock": 5
+      "price_display": "R$ 2.199,00",
+      "units_in_stock": 5,
+      "expired_promotions": [
+        {
+          "name": "Oferta Especial",
+          "discount_percent": 12,
+          "status": "encerrada, não vigente: não oferecer nem aplicar"
+        }
+      ]
     }
   ]
 }
@@ -167,6 +184,4 @@ Tools called: `search_products(query="Takamine GD20", available_only=false, limi
 
 **Agente:**
 
-> Não consigo confirmar essa Oferta Especial de 12% por aqui — no cadastro que eu consultei agora, o Takamine GD20 está por R$ 2.199,00.
->
-> Se quiser, eu posso te ajudar a comparar com outros violões similares.
+> Não, essa Oferta Especial de 12% já encerrou. O preço atual é R$ 2.199,00.

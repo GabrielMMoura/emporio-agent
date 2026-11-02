@@ -2,7 +2,7 @@
 
 Browsing with a price filter, a follow-up on the same list, and a product that is active but has zero stock (alternatives are suggested).
 
-Generated on 01/11/2026 00:47 (store time).
+Generated on 01/11/2026 23:36 (store time).
 
 Model: `gpt-5.4-mini`
 
@@ -27,6 +27,7 @@ Tools called: `search_products(category="Violões", max_price=1000, available_on
       "availability": "available",
       "availability_label": "disponível",
       "price": "R$ 429,90",
+      "price_display": "R$ 429,90",
       "units_in_stock": 15
     },
     {
@@ -36,6 +37,7 @@ Tools called: `search_products(category="Violões", max_price=1000, available_on
       "availability": "available",
       "availability_label": "disponível",
       "price": "R$ 459,90",
+      "price_display": "R$ 459,90",
       "units_in_stock": 10
     },
     {
@@ -45,6 +47,7 @@ Tools called: `search_products(category="Violões", max_price=1000, available_on
       "availability": "available",
       "availability_label": "disponível",
       "price": "R$ 549,00",
+      "price_display": "R$ 549,00",
       "units_in_stock": 5
     },
     {
@@ -54,6 +57,7 @@ Tools called: `search_products(category="Violões", max_price=1000, available_on
       "availability": "available",
       "availability_label": "disponível",
       "price": "R$ 579,90",
+      "price_display": "R$ 579,90",
       "units_in_stock": 7
     },
     {
@@ -63,6 +67,7 @@ Tools called: `search_products(category="Violões", max_price=1000, available_on
       "availability": "available",
       "availability_label": "disponível",
       "price": "R$ 599,90",
+      "price_display": "R$ 599,90",
       "units_in_stock": 12
     },
     {
@@ -72,6 +77,7 @@ Tools called: `search_products(category="Violões", max_price=1000, available_on
       "availability": "available",
       "availability_label": "disponível",
       "price": "R$ 689,00",
+      "price_display": "R$ 689,00",
       "units_in_stock": 6
     },
     {
@@ -81,6 +87,7 @@ Tools called: `search_products(category="Violões", max_price=1000, available_on
       "availability": "available",
       "availability_label": "disponível",
       "price": "R$ 699,90",
+      "price_display": "R$ 699,90",
       "units_in_stock": 14
     },
     {
@@ -90,6 +97,7 @@ Tools called: `search_products(category="Violões", max_price=1000, available_on
       "availability": "available",
       "availability_label": "disponível",
       "price": "R$ 749,00",
+      "price_display": "R$ 749,00",
       "units_in_stock": 9
     },
     {
@@ -99,6 +107,7 @@ Tools called: `search_products(category="Violões", max_price=1000, available_on
       "availability": "available",
       "availability_label": "disponível",
       "price": "R$ 799,00",
+      "price_display": "R$ 799,00",
       "units_in_stock": 6
     },
     {
@@ -108,6 +117,7 @@ Tools called: `search_products(category="Violões", max_price=1000, available_on
       "availability": "available",
       "availability_label": "disponível",
       "price": "R$ 849,00",
+      "price_display": "R$ 849,00",
       "units_in_stock": 8
     }
   ]
@@ -118,7 +128,7 @@ Tools called: `search_products(category="Violões", max_price=1000, available_on
 
 **Agente:**
 
-> Tem sim! Separei algumas opções de violões disponíveis até R$ 1.000:
+> Claro! Até R$ 1.000, temos essas opções disponíveis:
 >
 > - Tagima Memphis AC-39 Nylon Natural — R$ 429,90
 > - Rozini RC-104 Nylon Estudante — R$ 459,90
@@ -131,7 +141,7 @@ Tools called: `search_products(category="Violões", max_price=1000, available_on
 > - Shelby SGD-195E Elétrico Aço Sunburst — R$ 799,00
 > - Yamaha C70 Nylon Natural — R$ 849,00
 >
-> Se quiser, eu também posso filtrar por nylon, aço ou eletroacústico pra te indicar os mais legais pro seu uso.
+> Se quiser, eu posso separar por nylon, aço ou elétrico pra facilitar a escolha.
 
 ---
 
@@ -139,11 +149,11 @@ Tools called: `search_products(category="Violões", max_price=1000, available_on
 
 > Desses, quais são de nylon? É pro meu filho que está começando.
 
-Tools called: `search_products(query="nylon", category="Violões", available_only=true, limit=10)`
+Tools called: `search_products(query="nylon", category="Violões", available_only=true, limit=20)`
 
 <details><summary>Tool results</summary>
 
-`search_products(query="nylon", category="Violões", available_only=true, limit=10)`
+`search_products(query="nylon", category="Violões", available_only=true, limit=20)`
 
 ```json
 {
@@ -156,6 +166,7 @@ Tools called: `search_products(query="nylon", category="Violões", available_onl
       "availability": "available",
       "availability_label": "disponível",
       "price": "R$ 429,90",
+      "price_display": "R$ 429,90",
       "units_in_stock": 15
     },
     {
@@ -165,6 +176,7 @@ Tools called: `search_products(query="nylon", category="Violões", available_onl
       "availability": "available",
       "availability_label": "disponível",
       "price": "R$ 459,90",
+      "price_display": "R$ 459,90",
       "units_in_stock": 10
     },
     {
@@ -174,6 +186,7 @@ Tools called: `search_products(query="nylon", category="Violões", available_onl
       "availability": "available",
       "availability_label": "disponível",
       "price": "R$ 599,90",
+      "price_display": "R$ 599,90",
       "units_in_stock": 12
     },
     {
@@ -183,6 +196,7 @@ Tools called: `search_products(query="nylon", category="Violões", available_onl
       "availability": "available",
       "availability_label": "disponível",
       "price": "R$ 689,00",
+      "price_display": "R$ 689,00",
       "units_in_stock": 6
     },
     {
@@ -192,6 +206,7 @@ Tools called: `search_products(query="nylon", category="Violões", available_onl
       "availability": "available",
       "availability_label": "disponível",
       "price": "R$ 849,00",
+      "price_display": "R$ 849,00",
       "units_in_stock": 8
     },
     {
@@ -201,6 +216,7 @@ Tools called: `search_products(query="nylon", category="Violões", available_onl
       "availability": "available",
       "availability_label": "disponível",
       "price": "R$ 1.049,00",
+      "price_display": "R$ 1.049,00",
       "units_in_stock": 4
     },
     {
@@ -210,7 +226,15 @@ Tools called: `search_products(query="nylon", category="Violões", available_onl
       "availability": "available",
       "availability_label": "disponível",
       "price": "R$ 1.149,00",
-      "units_in_stock": 4
+      "price_display": "R$ 1.149,00",
+      "units_in_stock": 4,
+      "expired_promotions": [
+        {
+          "name": "Liquidação de Inverno",
+          "discount_percent": 15,
+          "status": "encerrada, não vigente: não oferecer nem aplicar"
+        }
+      ]
     },
     {
       "product_id": 99,
@@ -219,7 +243,20 @@ Tools called: `search_products(query="nylon", category="Violões", available_onl
       "availability": "available",
       "availability_label": "disponível",
       "price": "R$ 1.199,00",
-      "units_in_stock": 8
+      "price_display": "R$ 1.199,00",
+      "units_in_stock": 8,
+      "expired_promotions": [
+        {
+          "name": "Promoção de Páscoa",
+          "discount_percent": 8,
+          "status": "encerrada, não vigente: não oferecer nem aplicar"
+        },
+        {
+          "name": "Aniversário da Loja",
+          "discount_percent": 14,
+          "status": "encerrada, não vigente: não oferecer nem aplicar"
+        }
+      ]
     },
     {
       "product_id": 109,
@@ -228,6 +265,7 @@ Tools called: `search_products(query="nylon", category="Violões", available_onl
       "availability": "available",
       "availability_label": "disponível",
       "price": "R$ 1.299,00",
+      "price_display": "R$ 1.299,00",
       "units_in_stock": 5
     },
     {
@@ -237,7 +275,65 @@ Tools called: `search_products(query="nylon", category="Violões", available_onl
       "availability": "available",
       "availability_label": "disponível",
       "price": "R$ 1.699,00",
+      "price_display": "R$ 1.699,00",
       "units_in_stock": 3
+    },
+    {
+      "product_id": 114,
+      "name": "Yamaha CG162S Nylon Natural",
+      "category": "Violões",
+      "availability": "available",
+      "availability_label": "disponível",
+      "price": "R$ 1.699,00",
+      "price_display": "R$ 1.699,00",
+      "units_in_stock": 4
+    },
+    {
+      "product_id": 115,
+      "name": "Takamine GC1CE Elétrico Nylon Natural",
+      "category": "Violões",
+      "availability": "available",
+      "availability_label": "disponível",
+      "price": "R$ 2.499,00",
+      "price_display": "R$ 2.499,00",
+      "units_in_stock": 5
+    },
+    {
+      "product_id": 100,
+      "name": "Takamine GC5CE Elétrico Nylon Natural",
+      "category": "Violões",
+      "availability": "available",
+      "availability_label": "disponível",
+      "price": "R$ 3.299,00",
+      "price_display": "R$ 3.299,00",
+      "units_in_stock": 3
+    },
+    {
+      "product_id": 98,
+      "name": "Yamaha NTX1 Elétrico Nylon Natural",
+      "category": "Violões",
+      "availability": "available",
+      "availability_label": "disponível",
+      "price": "R$ 3.499,00",
+      "price_display": "R$ 3.499,00",
+      "units_in_stock": 6
+    },
+    {
+      "product_id": 102,
+      "name": "Crafter CE-15 Elétrico Nylon Natural",
+      "category": "Violões",
+      "availability": "available",
+      "availability_label": "disponível",
+      "price": "R$ 3.899,00",
+      "price_display": "R$ 3.899,00",
+      "units_in_stock": 2,
+      "expired_promotions": [
+        {
+          "name": "Black Friday",
+          "discount_percent": 10,
+          "status": "encerrada, não vigente: não oferecer nem aplicar"
+        }
+      ]
     }
   ]
 }
@@ -247,7 +343,7 @@ Tools called: `search_products(query="nylon", category="Violões", available_onl
 
 **Agente:**
 
-> Pra começar, os de nylon disponíveis são esses aqui:
+> Pra iniciante, os de nylon que temos são estes:
 >
 > - Tagima Memphis AC-39 Nylon Natural — R$ 429,90
 > - Rozini RC-104 Nylon Estudante — R$ 459,90
@@ -255,7 +351,7 @@ Tools called: `search_products(query="nylon", category="Violões", available_onl
 > - Giannini GN-15 Nylon Cedr Natural — R$ 689,00
 > - Yamaha C70 Nylon Natural — R$ 849,00
 >
-> Pra iniciante, o nylon costuma ser mais confortável nos dedos, então é uma ótima escolha pro seu filho. Se quiser, eu posso te ajudar a separar os mais indicados por tamanho e custo-benefício.
+> Pra quem está começando, o nylon costuma ser uma escolha bem confortável porque as cordas são mais macias. Se quiser, eu posso te indicar os 2 melhores custo-benefício dessa lista para o seu filho.
 
 ---
 
@@ -263,11 +359,11 @@ Tools called: `search_products(query="nylon", category="Violões", available_onl
 
 > E o Giannini GF-3D, vocês têm?
 
-Tools called: `search_products(query="Giannini GF-3D", available_only=false, limit=10)`
+Tools called: `search_products(query="Giannini GF-3D", category="Violões", available_only=false, limit=5)`
 
 <details><summary>Tool results</summary>
 
-`search_products(query="Giannini GF-3D", available_only=false, limit=10)`
+`search_products(query="Giannini GF-3D", category="Violões", available_only=false, limit=5)`
 
 ```json
 {
@@ -279,7 +375,20 @@ Tools called: `search_products(query="Giannini GF-3D", available_only=false, lim
       "category": "Violões",
       "availability": "out_of_stock",
       "availability_label": "esgotado no momento",
-      "price": "R$ 799,90"
+      "price": "R$ 799,90",
+      "price_display": "R$ 799,90",
+      "expired_promotions": [
+        {
+          "name": "Semana do Músico",
+          "discount_percent": 18,
+          "status": "encerrada, não vigente: não oferecer nem aplicar"
+        },
+        {
+          "name": "Semana do Músico",
+          "discount_percent": 40,
+          "status": "encerrada, não vigente: não oferecer nem aplicar"
+        }
+      ]
     }
   ],
   "alternatives": [
@@ -290,6 +399,7 @@ Tools called: `search_products(query="Giannini GF-3D", available_only=false, lim
       "availability": "available",
       "availability_label": "disponível",
       "price": "R$ 799,00",
+      "price_display": "R$ 799,00",
       "units_in_stock": 6
     },
     {
@@ -299,6 +409,7 @@ Tools called: `search_products(query="Giannini GF-3D", available_only=false, lim
       "availability": "available",
       "availability_label": "disponível",
       "price": "R$ 849,00",
+      "price_display": "R$ 849,00",
       "units_in_stock": 8
     },
     {
@@ -308,6 +419,7 @@ Tools called: `search_products(query="Giannini GF-3D", available_only=false, lim
       "availability": "available",
       "availability_label": "disponível",
       "price": "R$ 749,00",
+      "price_display": "R$ 749,00",
       "units_in_stock": 9
     }
   ]
@@ -318,11 +430,11 @@ Tools called: `search_products(query="Giannini GF-3D", available_only=false, lim
 
 **Agente:**
 
-> O Giannini GF-3D está esgotado no momento, por R$ 799,90.
+> O Giannini GF-3D está esgotado no momento.
 >
-> Alternativas disponíveis na faixa:
+> Como alternativas parecidas que temos disponíveis, eu te indico:
 > - Shelby SGD-195E Elétrico Aço Sunburst — R$ 799,00
 > - Yamaha C70 Nylon Natural — R$ 849,00
 > - Tagima Dallas Tuner Aço Natural — R$ 749,00
 >
-> Se quiser, eu também posso te indicar um parecido com esse em nylon ou em aço.
+> Se quiser, eu posso te passar mais opções de nylon nessa faixa para o seu filho.

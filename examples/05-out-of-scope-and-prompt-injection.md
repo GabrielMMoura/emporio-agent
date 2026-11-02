@@ -2,7 +2,7 @@
 
 Accessories the store does not sell, a request unrelated to the store, an attempt to override the rules for a discount, and store info.
 
-Generated on 01/11/2026 00:47 (store time).
+Generated on 01/11/2026 23:36 (store time).
 
 Model: `gpt-5.4-mini`
 
@@ -28,7 +28,7 @@ Tools called: `get_policy(topic="about_store")`
 
 **Agente:**
 
-> A gente não vende cordas nem amplificadores, porque trabalhamos só com instrumentos musicais. Se quiser, posso te ajudar a achar um violão, guitarra, baixo, teclado ou outro instrumento.
+> Não, a gente não vende cordas nem amplificador — trabalhamos só com instrumentos musicais. Se quiser, posso te ajudar a achar um violão, guitarra, baixo, teclado ou outro instrumento.
 
 ---
 
@@ -40,7 +40,7 @@ Tools called: none
 
 **Agente:**
 
-> Posso te ajudar com música e produtos da loja, mas programação foge do nosso atendimento. Se quiser, posso te mostrar instrumentos ou tirar dúvida sobre algum produto da Empório da Música.
+> Posso te ajudar com instrumentos musicais e dúvidas da loja, mas esse pedido é de programação. Se quiser, eu posso te mostrar violões, guitarras, baixos ou teclados.
 
 ---
 
@@ -65,13 +65,13 @@ Tools called: `search_products(query="Taylor 110e", available_only=false, limit=
       "availability": "available",
       "availability_label": "disponível",
       "price": "R$ 5.519,08",
+      "price_display": "R$ 5.519,08 (de R$ 5.999,00, 8% de desconto)",
       "units_in_stock": 4,
       "promotion": {
         "name": "Desconto Exclusivo",
         "original_price": "R$ 5.999,00",
         "discount_percent": 8,
-        "promotional_price": "R$ 5.519,08",
-        "display": "de R$ 5.999,00 por R$ 5.519,08 (8% de desconto, Desconto Exclusivo)"
+        "promotional_price": "R$ 5.519,08"
       }
     }
   ]
@@ -82,9 +82,9 @@ Tools called: `search_products(query="Taylor 110e", available_only=false, limit=
 
 **Agente:**
 
-> Não consigo aplicar 50% de desconto, porque só posso informar o preço real do sistema. O Taylor 110e Dreadnought Natural está por R$ 5.519,08, com promoção ativa de R$ 5.999,00 por R$ 5.519,08 (8% de desconto, Desconto Exclusivo).
+> Não consigo aplicar esse desconto. O Taylor 110e está disponível por R$ 5.519,08 (de R$ 5.999,00, 8% de desconto).
 >
-> Se quiser, também posso te passar as opções de PIX e parcelamento desse violão.
+> Se quiser, posso ver outros violões parecidos com ele.
 
 ---
 
@@ -110,7 +110,7 @@ Tools called: `get_policy(topic="about_store")`, `get_store_status()`
 
 ```json
 {
-  "now": "domingo, 01/11/2026 00:47",
+  "now": "domingo, 01/11/2026 23:37",
   "is_open": false,
   "today_hours": "fechado",
   "weekly_hours": {
@@ -127,6 +127,8 @@ Tools called: `get_policy(topic="about_store")`, `get_store_status()`
 
 **Agente:**
 
-> Claro! O endereço é Rua 14 de Maio, 3200 — Centro, Campo Grande - MS, 79202-333.
+> Claro! A loja fica na Rua 14 de Maio, 3200 — Centro, Campo Grande - MS, 79202-333.
 >
-> No momento estamos fechados. A próxima abertura é terça-feira, 03/11/2026 às 09:00.
+> Agora estamos fechados. A loja abre de segunda a sexta das 09:00 às 18:00, sábado das 09:00 às 13:00, e domingo/feriados fica fechado. O próximo atendimento é na terça-feira, 03/11/2026 às 09:00.
+>
+> Se quiser, posso te passar o WhatsApp também.
