@@ -164,3 +164,23 @@ def test_specific_lookup_of_unavailable_product_includes_alternatives():
 def test_available_or_multiple_matches_have_no_alternatives():
     assert "alternatives" not in search_products(query="takamine gd20")
     assert "alternatives" not in search_products(query="giannini")
+
+
+def test_expired_promotion_is_reported_as_ended_without_changing_price():
+    # Takamine GD20 had a 12% "Oferta Especial" (promotion 4, is_active = 0).
+    for result in (get_product_details(95), search_products(query="takamine gd20")["products"][0]):
+        assert "promotion" not in result
+        assert result["price_display"] == "R$ 2.199,00"
+        assert result["expired_promotions"] == [
+            {
+                "name": "Oferta Especial",
+                "discount_percent": 12,
+                "status": "encerrada, não vigente: não oferecer nem aplicar",
+            }
+        ]
+
+
+def test_product_with_active_and_no_expired_promotion():
+    details = get_product_details(121)
+    assert details["promotion"]["discount_percent"] == 20
+    assert "expired_promotions" not in details

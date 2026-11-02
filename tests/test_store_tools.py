@@ -145,3 +145,9 @@ def test_policy_tool_returns_section():
     result = get_policy("payment")
     assert result["topic"] == "payment"
     assert "PIX" in result["text"]
+
+
+def test_expired_promotion_does_not_block_pix_discount():
+    result = calculate_payment_options(95)  # only an expired promotion
+    assert "promotion" not in result
+    assert result["pix"]["total"] == "R$ 2.089,05"

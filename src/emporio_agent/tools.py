@@ -76,6 +76,15 @@ def _product_summary(product: Product) -> dict:
             "discount_percent": product.promotion.discount_percent,
             "promotional_price": format_brl(product.final_price),
         }
+    if product.expired_promotions:
+        summary["expired_promotions"] = [
+            {
+                "name": promo.description,
+                "discount_percent": promo.discount_percent,
+                "status": "encerrada, não vigente: não oferecer nem aplicar",
+            }
+            for promo in product.expired_promotions
+        ]
     return summary
 
 

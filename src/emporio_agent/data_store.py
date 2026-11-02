@@ -75,6 +75,8 @@ class Product:
     status: str
     specs: dict
     promotion: Promotion | None = None
+    # Inactive promotions, kept only so the agent can say they ended. Never affect the price.
+    expired_promotions: tuple[Promotion, ...] = ()
 
     @property
     def availability(self) -> str:
@@ -143,26 +145,32 @@ def _read(data_dir: Path, table: str) -> list[dict[str, str]]:
         return [{k: v.strip() for k, v in row.items()} for row in csv.DictReader(f)]
 
 
-def _active_promotions(rows: list[dict[str, str]]) -> dict[int, Promotion]:
-    """Only `is_active = 1` promotions exist for the agent; expired ones are never offered.
+def _split_promotions(
+    rows: list[dict[str, str]],
+) -> tuple[dict[int, Promotion], dict[int, list[Promotion]]]:
+    """Returns (active promotion per product, expired promotions per product).
 
+    Only `is_active = 1` promotions change prices; expired ones are never offered and exist
+    only so the agent can tell a customer that a promotion has ended (policy 7.3).
     If a product ever had two active promotions, the larger discount would apply
     (promotions are not cumulative, policy 6.2). The provided data has at most one.
     """
     active: dict[int, Promotion] = {}
+    expired: dict[int, list[Promotion]] = {}
     for row in rows:
-        if row["is_active"] != "1":
-            continue
         promo = Promotion(
             id=int(row["promotion_id"]),
             product_id=int(row["product_id"]),
             discount_percent=int(row["discount_percent"]),
             description=row["description"],
         )
+        if row["is_active"] != "1":
+            expired.setdefault(promo.product_id, []).append(promo)
+            continue
         current = active.get(promo.product_id)
         if current is None or promo.discount_percent > current.discount_percent:
             active[promo.product_id] = promo
-    return active
+    return active, expired
 
 
 def load_store(data_dir: Path = DATA_DIR) -> Store:
@@ -170,7 +178,7 @@ def load_store(data_dir: Path = DATA_DIR) -> Store:
         int(r["category_id"]): Category(int(r["category_id"]), r["name"], r["description"])
         for r in _read(data_dir, "categories")
     }
-    promotions = _active_promotions(_read(data_dir, "promotions"))
+    promotions, expired_promotions = _split_promotions(_read(data_dir, "promotions"))
 
     products = {}
     for r in _read(data_dir, "products"):
@@ -185,6 +193,7 @@ def load_store(data_dir: Path = DATA_DIR) -> Store:
             status=r["status"],
             specs=json.loads(r["specs"]) if r["specs"] else {},
             promotion=promotions.get(pid),
+            expired_promotions=tuple(expired_promotions.get(pid, [])),
         )
 
     customers = {

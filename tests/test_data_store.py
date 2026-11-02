@@ -101,3 +101,12 @@ def test_description_naming_another_brand_is_unreliable(store, product_id):
 @pytest.mark.parametrize("product_id", [81, 95, 131, 141, 143])
 def test_consistent_descriptions_are_reliable(store, product_id):
     assert store.products[product_id].description_is_reliable
+
+
+def test_expired_promotions_are_kept_apart_from_the_price(store):
+    giannini = store.products[96]  # two inactive "Semana do Músico" promotions, 18% and 40%
+    assert giannini.promotion is None
+    assert sorted(p.discount_percent for p in giannini.expired_promotions) == [18, 40]
+    assert giannini.final_price == giannini.price
+    total_expired = sum(len(p.expired_promotions) for p in store.products.values())
+    assert total_expired == 21  # 25 promotions, 4 active
