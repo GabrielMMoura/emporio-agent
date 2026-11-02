@@ -215,11 +215,15 @@ change that invalidates them fails the build.
   empty-identity guard in the tool. The remaining failure mode: the agent sometimes forgets an
   order number given in the first message and asks for it again. It never discloses data
   without verification, since that check is in code.
-- **Promotion label in payment answers.** Asked "quanto fica no PIX o [produto]?" 20 times
-  across the 4 promoted products, the reply contained the code-built `price_display` verbatim
-  19/20 times (about half before `price_display`). The miss quoted the promotional price
-  without the original price and %. A fully deterministic fix would post-process replies or
-  render price answers from templates.
+- **Promotion label in payment answers: 19/20.** Method: a fresh conversation per run with the
+  single message "Quanto fica no PIX o [produto]?", 5 runs for each of the 4 products with an
+  active promotion (Ohana CK-20, Kalani KAL-700T, Crafter HT-100, Taylor 110e). A run passed
+  only if the reply contained the tool's `price_display` string verbatim, e.g.
+  `R$ 439,20 (de R$ 549,00, 20% de desconto)`. Before `price_display`, with a prompt rule only,
+  about half of the replies had the full label. The one miss (Taylor 110e) gave the promotional
+  price without the original price and %. Next step: post-process the reply in code, so that
+  any promotional price quoted without its `price_display` gets it inserted or the reply is
+  regenerated. That would make the rule deterministic instead of 95%.
 - **Expired promotions.** The example 02 question ("Vi que tinha uma Oferta Especial de 12%,
   ainda vale?") was run 10 times: 10/10 said clearly that it ended and gave the current price,
   none quoted the old discount. Only that scenario was measured.
