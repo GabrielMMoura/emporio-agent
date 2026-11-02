@@ -85,15 +85,16 @@ def test_promotion_shows_original_price_and_discount():
         "original_price": "R$ 2.399,00",
         "discount_percent": 18,
         "promotional_price": "R$ 1.967,18",
-        "display": "de R$ 2.399,00 por R$ 1.967,18 (18% de desconto, Desconto Exclusivo)",
     }
     assert details["price"] == "R$ 1.967,18"
+    assert details["price_display"] == "R$ 1.967,18 (de R$ 2.399,00, 18% de desconto)"
 
 
 def test_expired_promotion_is_not_shown():
     details = get_product_details(95)  # Takamine GD20, only inactive promotions
     assert "promotion" not in details
     assert details["price"] == "R$ 2.199,00"
+    assert details["price_display"] == "R$ 2.199,00"
 
 
 def test_details_include_specs_and_no_alternatives_when_available():

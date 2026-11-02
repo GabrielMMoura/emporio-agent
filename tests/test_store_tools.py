@@ -90,9 +90,9 @@ def test_pix_discount_does_not_stack_with_promotion():
     assert result["promotion"]["original_price"] == "R$ 549,00"
     assert result["promotion"]["discount_percent"] == 20
     # Regression: PIX answers for promoted items left out the original price and percent.
-    assert result["promotion"]["display"] == (
-        "de R$ 549,00 por R$ 439,20 (20% de desconto, Desconto Exclusivo)"
-    )
+    expected = "R$ 439,20 (de R$ 549,00, 20% de desconto)"
+    assert result["price_display"] == expected
+    assert result["pix"]["price_display"] == expected
     assert result["price"] == "R$ 439,20"
     assert result["pix"]["total"] == "R$ 439,20"
     assert "does not stack" in result["pix"]["note"]
@@ -118,6 +118,12 @@ def test_cheap_product_limited_to_3x():
 def test_quantity_multiplies_total():
     result = calculate_payment_options(119, quantity=2)
     assert result["price"] == "R$ 319,80"
+    assert result["price_display"] == "R$ 319,80"
+
+
+def test_price_display_scales_promotion_with_quantity():
+    result = calculate_payment_options(121, quantity=2)
+    assert result["price_display"] == "R$ 878,40 (de R$ 1.098,00, 20% de desconto)"
 
 
 @pytest.mark.parametrize("product_id", [96, 113, 130])

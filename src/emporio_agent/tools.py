@@ -45,13 +45,16 @@ def _category_name(product: Product) -> str:
     return get_store().categories[product.category_id].name
 
 
-def _promotion_label(product: Product, quantity: int = 1) -> str:
-    promo = product.promotion
-    original, final = product.price * quantity, product.final_price * quantity
-    return (
-        f"de {format_brl(original)} por {format_brl(final)} "
-        f"({promo.discount_percent}% de desconto, {promo.description})"
-    )
+def _price_display(product: Product, quantity: int = 1) -> str:
+    """Price text the model must copy verbatim, e.g. 'R$ 539,10 (de R$ 599,00, 10% de desconto)'.
+
+    Built in code because the model kept dropping the original price or the percentage.
+    """
+    final = format_brl(product.final_price * quantity)
+    if product.promotion is None:
+        return final
+    original = format_brl(product.price * quantity)
+    return f"{final} (de {original}, {product.promotion.discount_percent}% de desconto)"
 
 
 def _product_summary(product: Product) -> dict:
@@ -62,6 +65,7 @@ def _product_summary(product: Product) -> dict:
         "availability": product.availability,
         "availability_label": AVAILABILITY_LABELS[product.availability],
         "price": format_brl(product.final_price),
+        "price_display": _price_display(product),
     }
     if product.availability == "available":
         summary["units_in_stock"] = product.stock
@@ -71,7 +75,6 @@ def _product_summary(product: Product) -> dict:
             "original_price": format_brl(product.price),
             "discount_percent": product.promotion.discount_percent,
             "promotional_price": format_brl(product.final_price),
-            "display": _promotion_label(product),
         }
     return summary
 
@@ -425,15 +428,15 @@ def calculate_payment_options(product_id: int, quantity: int = 1) -> dict:
             "name": product.promotion.description,
             "original_price": format_brl(product.price * quantity),
             "discount_percent": product.promotion.discount_percent,
-            "display": _promotion_label(product, quantity),
         }
     result["price"] = format_brl(total)
+    result["price_display"] = _price_display(product, quantity)
 
     if product.promotion:
         result["pix"] = {
             "total": format_brl(total),
-            "note": f"Preço promocional: {_promotion_label(product, quantity)}. "
-            "The 5% PIX discount does not stack with promotions (policy 6.2).",
+            "price_display": result["price_display"],
+            "note": "The 5% PIX discount does not stack with promotions (policy 6.2).",
         }
     else:
         result["pix"] = {
